@@ -2,6 +2,14 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.1",
     "parameters": {
+        "managedInstanceName": {
+            "defaultValue": "sqlhackmi",
+            "type": "string",
+            "maxLength": 13,
+            "metadata": {
+                "description": "Enter name to assign to the Azure SQL Database Managed Instance. The name can contain only lowercase letters, numbers, and '-', but can't start or end with '-' or have more than 63 characters."
+            }
+        }
     },
     "variables": {
         "location": "[resourceGroup().location]",
@@ -16,6 +24,7 @@
         "ManagementSubnetPrefix": "10.0.2.0/24",
         "TeamVMSubnetName": "TeamJumpServers",
         "TeamVMSubnetPrefix": "10.0.3.0/24",
+        "networkSecurityGroupName": "[concat('nsg-', parameters('managedInstanceName'))]"
     },
 
     "resources": [
