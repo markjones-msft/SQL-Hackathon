@@ -1,4 +1,4 @@
-{
+{   
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
@@ -17,7 +17,7 @@
         "MIsubnetPrefix": "10.0.1.0/24",
         "GatewaySubnetName": "GatewaySubnet",
         "GatewaySubnetPrefix": "10.0.0.0/24",
-        "ManagementSubnetName": "Management",
+        "ManagementSubnetName": "Shared",
         "ManagementSubnetPrefix": "10.0.2.0/24",
         "TeamVMSubnetName": "TeamJumpServers",
         "TeamVMSubnetPrefix": "10.0.3.0/24",
