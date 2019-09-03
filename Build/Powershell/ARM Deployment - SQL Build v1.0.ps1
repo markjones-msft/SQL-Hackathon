@@ -62,7 +62,10 @@ $BackupPath = 'C:\Backups'
 #Create Folders for Labs and Installs
 md -Path $InstallPath
 md -Path $BackupPath
+md -Path "C:\Data"
 
+$InstallPath = 'C:\Install'
+$BackupPath = 'C:\Backups'
 
 #Download Sciprts
 Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/1-%20CREATE%20Logins.sql' -OutFile "$BackupPath\1- CREATE Logins.sql"
@@ -71,12 +74,26 @@ Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackatho
 Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/4-DROP%20DATABASES.sql' -OutFile "$BackupPath\4-DROP DATABASES.sql"
 
 
+#Download & Unzip Backups
+
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Build/Database%20Build/Backups.zip?raw=true' -UseBasicParsing -OutFile "$InstallPath\Backups.zip"
 
 
-Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20LAB%20-%20Data%20Migration/SimpleTranReportApp.exe?raw=true' -OutFile "$Labs1Path\SimpleTranReportApp.exe"
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+function Unzip
+{
+    param([string]$zipfile, [string]$outpath)
 
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
+}
 
-#Download Backups
+Unzip "C:\Install\Backups.zip" "C:\"
+
+#Run SQL Cmds
+sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\1- CREATE Logins.sql"
+sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\2- RESTORE Databases.sql"
+sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\3- RESTORE FIXES.sql"
 
 
 

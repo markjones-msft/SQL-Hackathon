@@ -60,15 +60,16 @@
                 },
                 "storageProfile": {
                     "osDisk": {
+                        "name" :  "[concat(concat(variables('jbNetworkInterfaceName'),copyIndex(1), '_OsDisk_'))]",
                         "createOption": "fromImage",
                         "managedDisk": {
                             "storageAccountType": "StandardSSD_LRS"
                         }
                     },
                     "imageReference": {
-                        "publisher": "MicrosoftWindowsDesktop",
-                        "offer": "Windows-10",
-                        "sku": "RS3-ProN",
+                        "publisher": "MicrosoftVisualStudio",
+                        "offer": "VisualStudio",
+                        "sku": "VS-2017-Comm-Latest-Win10-N",
                         "version": "latest"
                     }
                 },
@@ -88,7 +89,7 @@
                         "provisionVmAgent": true
                     }
                 },
-                "licenseType": "Windows_Client"
+                "licenseType": "Windows_Server"
             },
                  "resources": [
                 {
