@@ -1,6 +1,7 @@
-
 USE master
 GO
+EXEC sp_configure "CLR Enabled", 1
+RECONFIGURE WITH OVERRIDE
 
 -- Implement DB Restore Fixes
 --------------------------------------------------
