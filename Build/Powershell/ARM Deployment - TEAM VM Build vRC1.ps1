@@ -34,10 +34,10 @@ Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/H
 
 # Download and install SQL Server Management Studio
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe' | Wait-Process
-#$pathArgs = {C:\Install\SSMS-Setup.exe /S /v/qn}
-#Invoke-Command -ScriptBlock $pathArgs
+$pathArgs = {C:\Install\SSMS-Setup.exe /S /v/qn}
+Invoke-Command -ScriptBlock $pathArgs
 
-Start-Process -file 'C:\Install\SSMS-Setup.exe' -arg '/S /v/qn' -wait
+#Start-Process -file 'C:\Install\SSMS-Setup.exe' -arg '/S /v/qn' -wait
 
 
 # Download and install Data Mirgation Assistant
