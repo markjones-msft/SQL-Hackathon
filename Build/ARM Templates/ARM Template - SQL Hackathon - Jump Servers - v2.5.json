@@ -30,7 +30,7 @@
     "variables": {
         "location": "[resourceGroup().location]",
         "virtualMachineSize": "Standard_D2_v3",
-        "jbVirtualMachineName": "vm-TEAMTEST1",
+        "jbVirtualMachineName": "vm-TEAMTEST2",
         "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",
