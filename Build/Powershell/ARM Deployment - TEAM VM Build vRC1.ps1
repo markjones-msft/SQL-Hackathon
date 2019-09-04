@@ -33,9 +33,12 @@ Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/H
 #Download Items for LAB 03
 
 # Download and install SQL Server Management Studio
-Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe'
-$pathArgs = {C:\Install\SSMS-Setup.exe /S /v/qn}
-Invoke-Command -ScriptBlock $pathArgs
+Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe' | Wait-Process
+#$pathArgs = {C:\Install\SSMS-Setup.exe /S /v/qn}
+#Invoke-Command -ScriptBlock $pathArgs
+
+Start-Process -file 'C:\Install\SSMS-Setup.exe' -arg '/S /v/qn' -wait
+
 
 # Download and install Data Mirgation Assistant
 Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile "$InstallPath\DataMigrationAssistant.msi"
@@ -44,9 +47,6 @@ Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\In
 # Download and install SSDT
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe' | wait-process
 
-$pathArgs = {C:\Install\SSDT-Setup-ENU.exe /layout c:\Install\ssdt_install_bits /passive /log C:\Install\SSDTLayout_install.txt}
-Invoke-Command -ScriptBlock $pathArgs | wait-process
 
-$pathArgs = {C:\Install\ssdt_install_bits\SSDT-Setup-enu.exe /install INSTALLALL /passive /norestart /log C:\Install\SSDT_install.txt}
-Invoke-Command -ScriptBlock $pathArgs | wait-process
-
+Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\ssdt_install_bits /passive /log C:\Install\SSDTLayout_install.txt' -wait
+Start-Process -file 'C:\Install\ssdt_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLALL /passive /norestart /log C:\Install\SSDT_install.txt' -wait

@@ -30,7 +30,7 @@
     "variables": {
         "location": "[resourceGroup().location]",
         "virtualMachineSize": "Standard_D2_v3",
-        "jbVirtualMachineName": "vm-TEAM2",
+        "jbVirtualMachineName": "vm-TEAMTEST1",
         "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",
@@ -219,7 +219,8 @@
                 "notificationSettings": {
                     "status": "Enabled",
                     "notificationLocale": "en",
-                    "timeInMinutes": "30"
+                    "timeInMinutes": "30",
+                    "emailRecipient":""
                 }
             }
         }
