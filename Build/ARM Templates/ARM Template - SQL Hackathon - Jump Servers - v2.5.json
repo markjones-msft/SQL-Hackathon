@@ -30,14 +30,14 @@
     "variables": {
         "location": "[resourceGroup().location]",
         "virtualMachineSize": "Standard_D2_v3",
-        "jbVirtualMachineName": "vm-TEAM1",
+        "jbVirtualMachineName": "vm-TEAM2",
         "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",
         "virtualNetworkName": "SQLHACK-SHARED-vnet",
         "SharedResourceGroup" : "SQLHACK-SHARED",
-        "jbCustomScriptFileName": "configure-jumpbox.ps1",
-        "jbCustomScriptUri": "[concat('https://raw.githubusercontent.com/microsoft/Migrating-SQL-databases-to-Azure/master/Hands-on%20lab/lab-files/ARM-template/', variables('jbCustomScriptFileName'))]",
+        "jbCustomScriptFileName": "ARM%20Deployment%20-%20TEAM%20VM%20Build%20vRC1.ps1",
+        "jbCustomScriptUri": "[concat('https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Powershell/', variables('jbCustomScriptFileName'))]",
         "managementSubnetName": "TeamJumpServers"
     },
 
@@ -215,7 +215,7 @@
                     "time": "19:00"
                 },
                 "timeZoneId": "UTC",
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('jbVirtualMachineName'), copyIndex(1))]",
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('jbVirtualMachineName'),copyIndex(1)))]",
                 "notificationSettings": {
                     "status": "Enabled",
                     "notificationLocale": "en",
