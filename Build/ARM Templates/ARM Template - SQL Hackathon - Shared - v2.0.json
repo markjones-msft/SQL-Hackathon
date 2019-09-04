@@ -86,8 +86,8 @@
         "MIsubnetName": "ManagedInstance",
         "gatewaySubnetName": "GatewaySubnet",
         "managementSubnetName": "Management",
-        "sqlCustomScriptFileName": "configure-sqlvm.ps1",
-        "sqlCustomScriptUri": "[concat('https://raw.githubusercontent.com/microsoft/Migrating-SQL-databases-to-Azure/master/Hands-on%20lab/lab-files/ARM-template/', variables('sqlCustomScriptFileName'))]",
+        "sqlCustomScriptFileName": "ARM%20Deployment%20-%20SQL%20Build%20vRC1.ps1",
+        "sqlCustomScriptUri": "[concat('https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Powershell/', variables('sqlCustomScriptFileName'))]",
         "dmsName": "sqlhack-migrationservice",
         "dataFactoryName": "sqlhack-datafactory",
         "nodeSize": "Standard_A4_v2"
