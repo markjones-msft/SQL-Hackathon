@@ -49,4 +49,4 @@ Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:
 
 
 Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\ssdt_install_bits /passive /log C:\Install\SSDTLayout_install.txt' -wait
-Start-Process -file 'C:\Install\ssdt_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLALL /passive /norestart /log C:\Install\SSDT_install.txt' -wait
+Start-Process -file 'C:\Install\ssdt_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLIS /passive /norestart /log C:\Install\SSDT_install.txt' -wait
