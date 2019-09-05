@@ -41,7 +41,7 @@
         "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",
-        "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
+        "virtualNetworkName": "[concat(parameters('SharedResourceGroup'), '-vnet')]",
         "jbCustomScriptFileName": "ARM%20Deployment%20-%20TEAM%20VM%20Build%20vRC1.ps1",
         "jbCustomScriptUri": "[concat('https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Powershell/', variables('jbCustomScriptFileName'))]",
         "managementSubnetName": "TeamJumpServers"
@@ -226,7 +226,7 @@
                     "status": "Enabled",
                     "notificationLocale": "en",
                     "timeInMinutes": "30",
-                    "emailRecipient":"markjon@microsoft.com"
+                    "emailRecipient":"msqlhack@microsoft.com"
                 }
             }
         }
