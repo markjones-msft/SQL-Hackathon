@@ -29,7 +29,7 @@ New-AzResourceGroup -Name $TeamRG -Location $Location
 
 
 ###################################################################
-# Setup Network
+# 1.Setup Network
 ###################################################################
 New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG `
@@ -42,7 +42,7 @@ if ($notPresent) {Write-Warning "VNET Failed to build. Please check and retry";r
 
 
 ###################################################################
-# 1.Setup SQL Legacy Server
+# 2.Setup SQL Legacy Server
 ###################################################################
 New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG
@@ -50,7 +50,7 @@ New-AzResourceGroupDeployment `
 -Name "LegacySQLBuild"
 
 ###################################################################
-# 2.Setup Team VM's
+# 3.Setup Team VM's
 ###################################################################
 $TeamVMCount = 01
 
@@ -61,16 +61,12 @@ New-AzResourceGroupDeployment `
 -vmCount $TeamVMCount
 
 ###################################################################
-# 2.Setup Shared Resources
+# 4.Setup Shared Resources
 ###################################################################
 New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20RC1.json" `
 -Name "SharedServicesBuild"
-
-
-
-
 
 #TODO Check Resources Build ok here
 
@@ -83,14 +79,12 @@ Get-AzKeyVault -Name sqlhack-keyvault -ResourceGroupName $SharedRG -ErrorVariabl
 if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
 
 
-
-
 ###################################################################
-# 2. Setup Team Workstations
+# 5.Setup Managed Instance
 ###################################################################
 New-AzResourceGroupDeployment `
--ResourceGroupName $TeamRG `
--TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20v2.5.json" `
--Name "TeamVMBuild" `
--vmCount $TeamVMCount
+-ResourceGroupName $SharedRG
+-TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Managed%20Instance-%20RC1.json" `
+-Name "ManagedInstanceBuild"
+
 
