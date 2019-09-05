@@ -84,6 +84,7 @@ New-AzResourceGroupDeployment `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20RC1.json" `
 -Name "LegacySQLBuild"
 
+
 ###################################################################
 # 3.Setup Team VM's
 ###################################################################
@@ -112,6 +113,10 @@ New-AzKeyVault -Name sqlhack-keyvault -ResourceGroupName $SharedRG -Location $Lo
 Get-AzKeyVault -Name sqlhack-keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
 
+#Create Blob Storage Container and SASURI Key.
+
+
+
 
 ###################################################################
 # 5.Setup Managed Instance
@@ -122,3 +127,8 @@ New-AzResourceGroupDeployment `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Managed%20Instance-%20RC1.json" `
 -Name "ManagedInstanceBuild"
 
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Enviroment Build complete. Please check for errors."
+
+Write-Warning "NOTE: THE FOLLOWING  POST BUILD TASKS ARE REQUIRED."
+Write-Warning "1. DataFactory Build Ok. You will need to start the integration runtime and enable AHUB"
+Write-Warning "2. Create SASURI Key to the Azure Blob Storage for Data Migration tasks"
