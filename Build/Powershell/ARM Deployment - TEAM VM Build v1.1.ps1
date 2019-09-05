@@ -47,3 +47,10 @@ Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:
 $pathArgs = {C:\Install\SSDT-Setup-enu.exe /install INSTALLALL /passive /norestart /log C:\Install\SSDT_install.txt}
 Invoke-Command -ScriptBlock $pathArgs
 
+# Create Shortcut on desktop
+$TargetFile   = "C:\_SQLHACK_\"
+$ShortcutFile = "C:\Users\Public\Desktop\_SQLHACK_.lnk"
+$WScriptShell = New-Object -ComObject WScript.Shell
+$Shortcut     = $WScriptShell.CreateShortcut($ShortcutFile)
+$Shortcut.TargetPath = $TargetFile
+$Shortcut.Save()
