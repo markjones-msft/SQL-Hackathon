@@ -85,7 +85,7 @@ function Unzip
     [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
 }
 
-Unzip "C:\Install\Backups.zip" "C:\" | Wait-Process
+Unzip "C:\Install\Backups.zip" "C:\"
 
 #Start SQL Service and wait
 Start-service -Name 'MSSQLSERVER' -Verbose
