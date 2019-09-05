@@ -64,7 +64,7 @@
     },
     "variables": {
         "location": "[resourceGroup().location]",
-        "uniqueManagedInstanceName": "[concat(parameters('managedInstanceName'), '-', uniqueString(resourceGroup().id))]",
+        "uniqueManagedInstanceName": "[concat(parameters('managedInstanceName'))]",
         "storageAccountName": "[concat('sqlhacksa', uniqueString(resourceGroup().id))]",
         "skuName": "GP_Gen5",
         "skuEdition": "GeneralPurpose",
@@ -89,7 +89,7 @@
         "sqlCustomScriptFileName": "ARM%20Deployment%20-%20SQL%20Build%20vRC1.ps1",
         "sqlCustomScriptUri": "[concat('https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Powershell/', variables('sqlCustomScriptFileName'))]",
         "dmsName": "sqlhack-migrationservice",
-        "dataFactoryName": "sqlhack-datafactory",
+        "dataFactoryName": "[concat('sqlhack-datafactory-', uniqueString(resourceGroup().id))]",
         "nodeSize": "Standard_A4_v2"
     },
     "resources": [
