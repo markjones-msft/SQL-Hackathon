@@ -37,16 +37,19 @@ Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:
 $pathArgs = {C:\Install\SSMS-Setup.exe /S /v/qn}
 Invoke-Command -ScriptBlock $pathArgs
 
-#Start-Process -file 'C:\Install\SSMS-Setup.exe' -arg '/S /v/qn' -wait
-
-
 # Download and install Data Mirgation Assistant
 Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile "$InstallPath\DataMigrationAssistant.msi"
 Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\Install\dma_install.txt' -passthru | wait-process
 
 # Download and install SSDT
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe' | wait-process
-
-
 Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\ssdt_install_bits /passive /log C:\Install\SSDTLayout_install.txt' -wait
 Start-Process -file 'C:\Install\ssdt_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLIS /passive /norestart /log C:\Install\SSDT_install.txt' -wait
+
+# Create Shortcut on desktop
+$TargetFile   = "C:\_SQLHACK_\"
+$ShortcutFile = "C:\Users\Public\Desktop\_SQLHACK_.lnk"
+$WScriptShell = New-Object -ComObject WScript.Shell
+$Shortcut     = $WScriptShell.CreateShortcut($ShortcutFile)
+$Shortcut.TargetPath = $TargetFile
+$Shortcut.Save()
