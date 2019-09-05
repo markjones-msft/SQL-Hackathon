@@ -29,7 +29,7 @@
         "sqlPublicIpAddressName": "[concat(variables('sqlVirtualMachineName'), '-ip')]",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
         "managementSubnetName": "Management",
-        "sqlCustomScriptFileName": "ARM%20Deployment%20-%20SQL%20Build%20vRC1.ps1",
+        "sqlCustomScriptFileName": "ARM%20Deployment%20-%20SQL%20Build%20RC1.ps1",
         "sqlCustomScriptUri": "[concat('https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Powershell/', variables('sqlCustomScriptFileName'))]"
     },
     "resources": [
