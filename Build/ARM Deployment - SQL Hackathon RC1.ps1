@@ -1,11 +1,17 @@
 ﻿
 #Login-AzAccount
 
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "#################################################################################"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "SQL Server Migration Hack Build Script"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "This script will build the enviroment for the SQL Server Hack and Labs"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "#################################################################################"
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Setting Enviroment Varibales....................................................."
 $subscriptionID = (Get-AzContext).Subscription.id
 $subscriptionName = (Get-AzContext).Subscription.Name
 
 if(-not $subscriptionID) {   `
-    $subscriptionMessage = "There is actually no selected Azure subscription. Please use Select-AzSubscription to select a default subscription";  `
+    $subscriptionMessage = "There is no selected Azure subscription. Please use Select-AzSubscription to select a default subscription";  `
     Write-Warning $subscriptionMessage ; return;}  `
 else {   `
     $subscriptionMessage = ("Actually targeting Azure subscription: {0} - {1}." -f $subscriptionID, $subscriptionName)}
@@ -50,7 +56,7 @@ if (!($notPresent)) {Write-Warning "Resource Group $TeamRG already exisits. Plea
 ###################################################################
 # Setup Hack Resource Groups
 ###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating Subscriptions $SharedRG and $TeamRG."
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating Subscriptions $SharedRG and $TeamRG.................................................."
 New-AzResourceGroup -Name $SharedRG -Location $Location 
 New-AzResourceGroup -Name $TeamRG -Location $Location
 
@@ -58,7 +64,7 @@ New-AzResourceGroup -Name $TeamRG -Location $Location
 ###################################################################
 # 1.Setup Network
 ###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating Virtual Network."
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating Virtual Network................................................."
 New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Network%20-%20RC1.json" `
@@ -72,7 +78,7 @@ if ($notPresent) {Write-Warning "VNET Failed to build. Please check and retry";r
 ###################################################################
 # 2.Setup SQL Legacy Server
 ###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server."
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server................................................."
 New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG  `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20RC1.json" `
@@ -81,7 +87,7 @@ New-AzResourceGroupDeployment `
 ###################################################################
 # 3.Setup Team VM's
 ###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s)."
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 New-AzResourceGroupDeployment `
 -ResourceGroupName $TeamRG `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC1.json" `
@@ -92,7 +98,7 @@ New-AzResourceGroupDeployment `
 ###################################################################
 # 4.Setup Shared Resources
 ###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating DMS, Datafactory, Keyvault, storage account shared resources."
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating DMS, Datafactory, Keyvault, storage account shared resources.................................................."
 New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG  `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20RC1.json" `
@@ -110,11 +116,9 @@ if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check 
 ###################################################################
 # 5.Setup Managed Instance
 ###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating sqlhack-mi Managed Instance"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating sqlhack-mi Managed Instance................................................."
 New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG  `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Managed%20Instance-%20RC1.json" `
 -Name "ManagedInstanceBuild"
 
-
-#todo - create file share and SAS uri key

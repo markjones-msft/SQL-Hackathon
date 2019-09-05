@@ -223,10 +223,7 @@
                 "timeZoneId": "UTC",
                 "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('jbVirtualMachineName'),copyIndex(1)))]",
                 "notificationSettings": {
-                    "status": "Enabled",
-                    "notificationLocale": "en",
-                    "timeInMinutes": "30",
-                    "emailRecipient":"msqlhack@microsoft.com"
+                    "status": "Disabled"
                 }
             }
         }
