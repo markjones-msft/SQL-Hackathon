@@ -1,29 +1,55 @@
-﻿[CmdletBinding()]
-Param(
-   [Parameter(Mandatory=$True)]
-   [string]$SubscriptionId,
-   [int]$TeamVMCount
-)
-
+﻿
 #Login-AzAccount
 
-Select-AzSubscription -SubscriptionId $SubscriptionId
+    $subscriptionID = (Get-AzContext).Subscription.id
+    $subscriptionName = (Get-AzContext).Subscription.Name
+
+    if(-not $subscriptionID) {   `
+        $subscriptionMessage = "There is actually no selected Azure subscription. Please use Select-AzSubscription to select a default subscription";  `
+        Write-Warning $subscriptionMessage ; return;}  `
+    else {   `
+        $subscriptionMessage = ("Actually targeting Azure subscription: {0} - {1}." -f $subscriptionID, $subscriptionName)}
+    Write-Host -BackgroundColor Black -ForegroundColor Yellow $subscriptionMessage
+
 
 ###################################################################
-# Setup Hack Resource Groups
+# Setup Vaiables
 ###################################################################
 
-$SharedRG = "SQLHACK-SHARED1"
-$TeamRG = "SQLHACK-TEAM_VMs1"
-$Location = "NorthEurope"
+$DefaultValue = 5
+if (($TeamVMCount = Read-Host "Please enter the number of Team VM's required (1-20) (default value: $DefaultValue)") -eq '') {$TeamVMCount = $DefaultValue}
+If ($TeamVMCount -gt 20)
+{
+    Write-Warning "Maximum number TEAM VM's is 20. Setting to 20 VM's"
+    $TeamVMCount = 20
+
+}
+
+$DefaultValue = "NorthEurope"
+if (($Location = Read-Host "Please enter the Location of the Resource Groups. (default value: $DefaultValue)") -eq '') {$Location = $DefaultValue}
+If (“NorthEurope”,”WestEurope”,”UKSouth”, "UKWest" -NotContains $Location)
+{
+    Write-Warning "Unrecognised location. Setting to Default $DefaultValue"
+    $Location = "NorthEurope"
+
+}
+
+$DefaultValue = "SQLHACK-SHARED"
+if (($SharedRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$SharedRG = $DefaultValue}
 
 # Check Resource Groups do not already exist
 Get-AzResourceGroup -name $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if (!($notPresent)) {Write-Warning "Resource Group $SharedRG already exisits. Please check retry"; return;}
 
+$DefaultValue = "SQLHACK-TEAM_VMs"
+if (($TeamRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$TeamRG = $DefaultValue}
+
 Get-AzResourceGroup -name $TeamRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if (!($notPresent)) {Write-Warning "Resource Group $TeamRG already exisits. Please check retry"; return;}
 
+###################################################################
+# Setup Hack Resource Groups
+###################################################################
 New-AzResourceGroup -Name $SharedRG -Location $Location 
 New-AzResourceGroup -Name $TeamRG -Location $Location
 
@@ -44,9 +70,6 @@ if ($notPresent) {Write-Warning "VNET Failed to build. Please check and retry";r
 ###################################################################
 # 2.Setup SQL Legacy Server
 ###################################################################
-$SharedRG = "SQLHACK-SHARED1"
-$TeamRG = "SQLHACK-TEAM_VMs1"
-$Location = "NorthEurope"
 New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG  `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20RC1.json" `
@@ -55,8 +78,6 @@ New-AzResourceGroupDeployment `
 ###################################################################
 # 3.Setup Team VM's
 ###################################################################
-$TeamVMCount = 01
-
 New-AzResourceGroupDeployment `
 -ResourceGroupName $TeamRG `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC1.json" `
@@ -71,8 +92,6 @@ New-AzResourceGroupDeployment `
 -ResourceGroupName $SharedRG  `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20RC1.json" `
 -Name "SharedServicesBuild"
-
-#TODO Check Resources Build ok here
 
 Write-Warning "DataFactory Build Ok. You will need to start the integration runtime and enable AHUB"
 
