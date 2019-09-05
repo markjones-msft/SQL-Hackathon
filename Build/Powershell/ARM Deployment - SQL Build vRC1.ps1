@@ -65,16 +65,16 @@ $InstallPath = 'C:\Install'
 $BackupPath = 'C:\Backups'
 
 #Download Sciprts
-Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/1-%20CREATE%20Logins.sql' -OutFile "$BackupPath\1- CREATE Logins.sql"
-Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/2-%20RESTORE%20Databases.sql' -OutFile "$BackupPath\2- RESTORE Databases.sql"
-Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/3-%20RESTORE%20FIXES.sql' -OutFile "$BackupPath\3- RESTORE FIXES.sql"
-Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/4-DROP%20DATABASES.sql' -OutFile "$BackupPath\4-DROP DATABASES.sql"
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/1-%20CREATE%20Logins.sql' -OutFile "$BackupPath\1- CREATE Logins.sql" | Wait-Process
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/2-%20RESTORE%20Databases.sql' -OutFile "$BackupPath\2- RESTORE Databases.sql" | Wait-Process
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/3-%20RESTORE%20FIXES.sql' -OutFile "$BackupPath\3- RESTORE FIXES.sql" | Wait-Process
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Database%20Build/4-DROP%20DATABASES.sql' -OutFile "$BackupPath\4-DROP DATABASES.sql" | Wait-Process
 
 
 #Download & Unzip Backups
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Build/Database%20Build/Backups.zip?raw=true' -UseBasicParsing -OutFile "$InstallPath\Backups.zip"
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Build/Database%20Build/Backups.zip?raw=true' -UseBasicParsing -OutFile "$InstallPath\Backups.zip" | Wait-Process
 
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -85,9 +85,16 @@ function Unzip
     [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
 }
 
-Unzip "C:\Install\Backups.zip" "C:\"
+Unzip "C:\Install\Backups.zip" "C:\" | Wait-Process
+
 
 #Run SQL Cmds
-sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\1- CREATE Logins.sql"
-sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\2- RESTORE Databases.sql"
-sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\3- RESTORE FIXES.sql"
+
+Start-process -File 'sqlcmd.exe' -arg '-S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "C:\Backups\1- CREATE Logins.sql"' -Wait
+Start-process -File 'sqlcmd.exe' -arg '-S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "C:\Backups\2- RESTORE Databases.sql"' -Wait
+Start-process -File 'sqlcmd.exe' -arg '-S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "C:\Backups\3- RESTORE FIXES.sql"' -Wait
+
+
+#sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\1- CREATE Logins.sql"
+#sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\2- RESTORE Databases.sql"
+#sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\3- RESTORE FIXES.sql"
