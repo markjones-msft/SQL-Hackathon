@@ -85,11 +85,8 @@ function Unzip
     [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
 }
 
-Unzip "C:\Install\Backups.zip" "C:\" | Wait-Process
 
-$pathArgs = {net start MSSQLSERVER}
-Invoke-Command -ScriptBlock $pathArgs
-
+Start-service -Name 'MSSQLSERVER' -Verbose
 Start-Sleep -s 30
 
 #Run SQL Cmds
