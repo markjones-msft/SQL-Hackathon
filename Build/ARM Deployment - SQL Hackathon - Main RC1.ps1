@@ -48,6 +48,12 @@ New-AzResourceGroupDeployment `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20v2.0.json" `
 -Name "SharedServicesBuild"
 
+New-AzResourceGroupDeployment `
+-ResourceGroupName "SQLHACK-SHARED" `
+-TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20v2.1.json" `
+-Name "LegacySQLBuild"
+
+
 #TODO Check Resources Build ok here
 
 Write-Warning "DataFactory Build Ok. You will need to start the integration runtime and enable AHUB"
