@@ -25,6 +25,13 @@
             "metadata": {
                 "description": "The password must be between 16 and 128 characters in length and must contain at least one number, one non-alphanumeric character, and one upper or lower case letter. Default value is Password.1234567890"
             }
+        },
+        "SharedResourceGroup": {
+            "defaultValue": "SQLHACK-SHARED",
+            "type": "string",
+            "metadata": {
+                "description": "The Shared Resource Group"
+            }
         }
     },
     "variables": {
@@ -34,8 +41,7 @@
         "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",
-        "virtualNetworkName": "SQLHACK-SHARED-vnet",
-        "SharedResourceGroup" : "SQLHACK-SHARED",
+        "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
         "jbCustomScriptFileName": "ARM%20Deployment%20-%20TEAM%20VM%20Build%20vRC1.ps1",
         "jbCustomScriptUri": "[concat('https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Powershell/', variables('jbCustomScriptFileName'))]",
         "managementSubnetName": "TeamJumpServers"
@@ -137,7 +143,7 @@
                         "name": "[concat('ipconfig',copyIndex(1))]",
                         "properties": {
                             "subnet": {
-                                "id": "[resourceId(variables('SharedResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('managementSubnetName'))]"
+                                "id": "[resourceId(parameters('SharedResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('managementSubnetName'))]"
                             },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIpAddress": {
@@ -220,7 +226,7 @@
                     "status": "Enabled",
                     "notificationLocale": "en",
                     "timeInMinutes": "30",
-                    "emailRecipient":""
+                    "emailRecipient":"markjon@microsoft.com"
                 }
             }
         }

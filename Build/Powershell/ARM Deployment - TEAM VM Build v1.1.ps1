@@ -46,3 +46,4 @@ Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\In
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe' | wait-process
 $pathArgs = {C:\Install\SSDT-Setup-enu.exe /install INSTALLALL /passive /norestart /log C:\Install\SSDT_install.txt}
 Invoke-Command -ScriptBlock $pathArgs
+

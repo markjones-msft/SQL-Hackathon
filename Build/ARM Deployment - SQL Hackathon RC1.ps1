@@ -44,8 +44,11 @@ if ($notPresent) {Write-Warning "VNET Failed to build. Please check and retry";r
 ###################################################################
 # 2.Setup SQL Legacy Server
 ###################################################################
+$SharedRG = "SQLHACK-SHARED1"
+$TeamRG = "SQLHACK-TEAM_VMs1"
+$Location = "NorthEurope"
 New-AzResourceGroupDeployment `
--ResourceGroupName $SharedRG
+-ResourceGroupName $SharedRG  `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20RC1.json" `
 -Name "LegacySQLBuild"
 
@@ -58,13 +61,14 @@ New-AzResourceGroupDeployment `
 -ResourceGroupName $TeamRG `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC1.json" `
 -Name "TeamVMBuild" `
--vmCount $TeamVMCount
+-vmCount $TeamVMCount `
+-SharedResourceGroup $SharedRG
 
 ###################################################################
 # 4.Setup Shared Resources
 ###################################################################
 New-AzResourceGroupDeployment `
--ResourceGroupName $SharedRG
+-ResourceGroupName $SharedRG  `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20RC1.json" `
 -Name "SharedServicesBuild"
 
@@ -83,7 +87,7 @@ if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check 
 # 5.Setup Managed Instance
 ###################################################################
 New-AzResourceGroupDeployment `
--ResourceGroupName $SharedRG
+-ResourceGroupName $SharedRG  `
 -TemplateUri "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Managed%20Instance-%20RC1.json" `
 -Name "ManagedInstanceBuild"
 
