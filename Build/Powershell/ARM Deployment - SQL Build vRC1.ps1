@@ -87,7 +87,11 @@ function Unzip
 
 Unzip "C:\Install\Backups.zip" "C:\" | Wait-Process
 
+$pathArgs = {net start MSSQLSERVER}
+Invoke-Command -ScriptBlock $pathArgs
+
 Start-Sleep -s 30
+
 #Run SQL Cmds
 Start-process -File 'C:\SQLServerFull\x86\Setup\sql_engine_core_shared_msi\PFiles\SqlServr\100\Tools\Binn\sqlcmd.exe' -arg '-S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "C:\Backups\1- CREATE Logins.sql"' -Wait
 Start-process -File 'C:\SQLServerFull\x86\Setup\sql_engine_core_shared_msi\PFiles\SqlServr\100\Tools\Binn\sqlcmd.exe' -arg '-S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "C:\Backups\2- RESTORE Databases.sql"' -Wait
