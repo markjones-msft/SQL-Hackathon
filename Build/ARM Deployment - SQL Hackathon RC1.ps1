@@ -1,15 +1,15 @@
 ﻿
 #Login-AzAccount
 
-    $subscriptionID = (Get-AzContext).Subscription.id
-    $subscriptionName = (Get-AzContext).Subscription.Name
+$subscriptionID = (Get-AzContext).Subscription.id
+$subscriptionName = (Get-AzContext).Subscription.Name
 
-    if(-not $subscriptionID) {   `
-        $subscriptionMessage = "There is actually no selected Azure subscription. Please use Select-AzSubscription to select a default subscription";  `
-        Write-Warning $subscriptionMessage ; return;}  `
-    else {   `
-        $subscriptionMessage = ("Actually targeting Azure subscription: {0} - {1}." -f $subscriptionID, $subscriptionName)}
-    Write-Host -BackgroundColor Black -ForegroundColor Yellow $subscriptionMessage
+if(-not $subscriptionID) {   `
+    $subscriptionMessage = "There is actually no selected Azure subscription. Please use Select-AzSubscription to select a default subscription";  `
+    Write-Warning $subscriptionMessage ; return;}  `
+else {   `
+    $subscriptionMessage = ("Actually targeting Azure subscription: {0} - {1}." -f $subscriptionID, $subscriptionName)}
+Write-Host -BackgroundColor Black -ForegroundColor Yellow $subscriptionMessage
 
 
 ###################################################################
