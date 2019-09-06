@@ -64,7 +64,7 @@
     },
     "variables": {
         "location": "[resourceGroup().location]",
-        "uniqueManagedInstanceName": "[concat(parameters('managedInstanceName'))]",
+        "uniqueManagedInstanceName": "[concat(parameters('managedInstanceName'), '-', uniqueString(resourceGroup().id))]",
         "skuName": "GP_Gen5",
         "skuEdition": "GeneralPurpose",
         "licenseType": "BasePrice",

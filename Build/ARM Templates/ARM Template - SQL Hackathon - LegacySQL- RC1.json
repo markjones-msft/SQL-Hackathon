@@ -99,7 +99,8 @@
                         "offer": "SQL2008R2SP3-WS2008R2SP1",
                         "sku": "Enterprise",
                         "version": "latest"
-                    }
+                    },
+                    "dataDisks": []
                 },   
                 "networkProfile": {
                     "networkInterfaces": [
