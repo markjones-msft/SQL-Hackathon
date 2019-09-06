@@ -128,7 +128,7 @@
                         "fileUris": [
                             "[variables('jbCustomScriptUri')]"
                         ],
-                        "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('jbCustomScriptFileName'), ' -SASURIKey {', parameters('SASURIKey'),'} -StorageAccount {', parameters('StorageAccount'),'}')]"                   
+                        "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('jbCustomScriptFileName'), ' -SASURIKey ', parameters('SASURIKey'),' -StorageAccount ', parameters('StorageAccount'))]"                   
                     }
                 },
                 "dependsOn": [
