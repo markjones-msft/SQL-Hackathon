@@ -1,14 +1,7 @@
-﻿function Disable-InternetExplorerESC {
-    $AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
-    $UserKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}"
-    Set-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0 -Force
-    Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0 -Force
-    Stop-Process -Name Explorer -Force
-    Write-Host "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
-}
-
-# Disable IE ESC
-#Disable-InternetExplorerESC
+﻿param (
+    [string]$SASURIKey , 
+    [string]$StorageAccount
+)
 
 $InstallPath = 'C:\Install'
 $LabsPath = 'C:\_SQLHACK_\LABS'
@@ -29,9 +22,14 @@ md -Path $Labs3Path
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20LAB%20-%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20LAB%20and%20Parameters.docx?raw=true' -OutFile "$Labs1Path\Hands-on Lab - Data Migration.docx"
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20LAB%20-%20Data%20Migration/SimpleTranReportApp.exe?raw=true' -OutFile "$Labs1Path\SimpleTranReportApp.exe"
 
+$SASURIKey | out-file -FilePath "$Labs1Path\SASKEY.txt"
+$StorageAccount | out-file -FilePath "$Labs1Path\StorageAccount.txt"
+
 #Download Items for LAB 02
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/02%20SSIS%20Migration/02-SSIS%20Migration.zip?raw=true' -OutFile "$InstallPath\Lab2.zip"
+$SASURIKey | out-file -FilePath "$Labs2Path\SASKEY.txt"
+$StorageAccount | out-file -FilePath "$Labs2Path\StorageAccount.txt"
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 function Unzip
@@ -44,6 +42,10 @@ function Unzip
 Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 
 #Download Items for LAB 03
+$StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
+
+
+
 
 # Download and install SQL Server Management Studio
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe'

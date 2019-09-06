@@ -16,8 +16,9 @@ Function Run-ARMTemplate
         [string]$Name,
         [int]$vmCount,
         [string] $SharedResourceGroup,
-        [string] $Wait
-
+        [string] $Wait,
+        [string] $sasToken,
+        [string] $StorageAccount
         )
         If (-not $vmCount)
          {
@@ -36,13 +37,12 @@ Function Run-ARMTemplate
         else   
         {
              $scriptBlock = {  
-                param ($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount)  `
-                New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateUri -Name $Name -vmCount $vmCount -SharedResourceGroup $SharedResourceGroup}
+                param ($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount, $sasToken, $StorageAccount)  `
+                New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateUri -Name $Name -SharedResourceGroup $SharedResourceGroup -vmCount $vmCount -SASURIKey $sasToken -StorageAccount $StorageAccount}
             
-                Start-Job -ScriptBlock $scriptBlock -ArgumentList @($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount)
+                Start-Job -ScriptBlock $scriptBlock -ArgumentList @($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount, $sasToken, $StorageAccount)
             
          }
-
 }
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Setting Enviroment Varibales....................................................."
@@ -56,7 +56,7 @@ else {   `
     $subscriptionMessage = ("Actually targeting Azure subscription: {0} - {1}." -f $subscriptionID, $subscriptionName)}
 Write-Host -BackgroundColor Black -ForegroundColor Yellow $subscriptionMessage
 
-if (($response = read-host "Please ensure this is the correct subscription. Press a to abort, any other key to continue.") -eq "a") {Exit}
+if (($response = read-host "Please ensure this is the correct subscription. Press a to abort, any other key to continue.") -eq "a") {Return;}
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Continuing to build.................................................."
 
 ###################################################################
@@ -109,43 +109,6 @@ Run-ARMTemplate -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "Ne
 Get-AzVirtualNetwork -Name "$SharedRG-vnet" -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if ($notPresent) {Write-Warning "VNET Failed to build. Please check and retry";return;}
 
-
-###################################################################
-# Setup Shared Resources
-###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating DMS, Datafactory, Keyvault, storage account shared resources.................................................."
-$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20RC1.json"
-
-Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "SharedServicesBuild"
-
-# Setup KeyVault
-$Random = Get-Random -Maximum 99999
-$Keyvault = "sqlhack-keyvault-$Random"
-New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location -EnableSoftDelete
-
-Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
-if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
-
-#Create Blob Storage Container and SASURI Key.
-#$StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
-#$StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
-#$Key0 = $StorageAccountKeys | Select-Object -First 1 -ExpandProperty Value
-#$Context = New-AzStorageContext -StorageAccountName $StorageAccount -StorageAccountKey $Key0
-
-#New-AzStorageContainer -Context $Context -Name migration
-
-#$storagePolicyName = “rawsamples-policy”
-#$expiryTime = (Get-Date).AddYears(1)
-#New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission rl -ExpiryTime $expiryTime -Context $Context
-
-#$sasToken = (New-AzStorageContainerSASToken -Name migration -Policy $storagePolicyName -Context $Context).substring(1)
-
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
-Write-host -BackgroundColor Black -ForegroundColor Yellow $sasToken
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
-
-
-
 ###################################################################
 # Setup SQL Legacy Server
 ###################################################################
@@ -156,12 +119,53 @@ Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "L
 
 
 ###################################################################
+# Setup Shared Resources
+###################################################################
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating DMS, Datafactory, Keyvault, storage account shared resources.................................................."
+$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20RC1.json"
+
+Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "SharedServicesBuild" -Wait "True"
+
+# Setup KeyVault
+$Random = Get-Random -Maximum 99999
+$Keyvault = "sqlhack-keyvault-$Random"
+New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location -EnableSoftDelete
+
+Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
+if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
+
+#Create Blob Storage Container and SASURI Key.
+$StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
+$StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
+$Key0 = $StorageAccountKeys | Select-Object -First 1 -ExpandProperty Value
+$Context = New-AzStorageContext -StorageAccountName $StorageAccount -StorageAccountKey $Key0
+
+New-AzStorageContainer -Context $Context -Name migration
+New-AzStorageContainer -Context $Context -Name auditlogs
+
+$storagePolicyName = “Migration-Policy”
+$expiryTime = (Get-Date).AddYears(1)
+New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission rl -ExpiryTime $expiryTime -Context $Context
+
+$sasToken = (New-AzStorageContainerSASToken -Name migration -Policy $storagePolicyName -Context $Context).substring(1)
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
+Write-host -BackgroundColor Black -ForegroundColor Yellow $sasToken
+Write-host -BackgroundColor Black -ForegroundColor Yellow "Storage account name: $StorageAccount"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
+
+read-host "Please Copy SASURI Key. Press any key to continue."
+
+
+
+
+###################################################################
 # Setup Team VM's
 ###################################################################
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
-$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC2.json"
-Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG
+$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC3.json"
+Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $sasToken -StorageAccount $StorageAccount
 
 
 ###################################################################
