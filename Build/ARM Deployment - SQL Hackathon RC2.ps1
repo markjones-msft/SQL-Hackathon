@@ -1,5 +1,7 @@
 ﻿
 #Login-AzAccount
+#Select-AzSubscription
+
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "#################################################################################"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "SQL Server Migration Hack Build Script"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "This script will build the enviroment for the SQL Server Hack and Labs"
@@ -141,10 +143,6 @@ Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "L
 ###################################################################
 # Setup Team VM's
 ###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
-$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC1.json"
-Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG
-
 #Create Blob Storage Container and SASURI Key.
 $StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
 $StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
@@ -162,6 +160,11 @@ $sasToken = (New-AzStorageContainerSASToken -Name migration2 -Policy $storagePol
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
 Write-host -BackgroundColor Black -ForegroundColor Yellow $sasToken
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
+$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC1.json"
+Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG
+
 
 ###################################################################
 # Setup Managed Instance
