@@ -1,5 +1,5 @@
 ﻿param (
-    [string]$SASURIKey , 
+    [string]$SASURIKey, 
     [string]$StorageAccount
 )
 

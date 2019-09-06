@@ -14,10 +14,10 @@ Function Run-ARMTemplate
         [string]$ResourceGroupName,
         [string]$TemplateUri,
         [string]$Name,
-        [int]$vmCount,
+        [int]    $vmCount,
         [string] $SharedResourceGroup,
         [string] $Wait,
-        [string] $sasToken,
+        [string] $SASURIKey,
         [string] $StorageAccount
         )
         If (-not $vmCount)
@@ -37,10 +37,10 @@ Function Run-ARMTemplate
         else   
         {
              $scriptBlock = {  
-                param ($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount, $sasToken, $StorageAccount)  `
-                New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateUri -Name $Name -SharedResourceGroup $SharedResourceGroup -vmCount $vmCount -SASURIKey $sasToken -StorageAccount $StorageAccount}
+                param ($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount, $SASURIKey, $StorageAccount)  `
+                New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateUri -Name $Name -SharedResourceGroup $SharedResourceGroup -vmCount $vmCount -SASURIKey $SASURIKey -StorageAccount $StorageAccount}
             
-                Start-Job -ScriptBlock $scriptBlock -ArgumentList @($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount, $sasToken, $StorageAccount)
+                Start-Job -ScriptBlock $scriptBlock -ArgumentList @($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount, $SASURIKey, $StorageAccount)
             
          }
 }
@@ -156,7 +156,7 @@ Write-Host -BackgroundColor Black -ForegroundColor Yellow "#####################
 
 read-host "Please Copy SASURI Key. Press any key to continue."
 
-
+write-host $sasToken
 
 
 ###################################################################
@@ -165,7 +165,7 @@ read-host "Please Copy SASURI Key. Press any key to continue."
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC4.json"
-Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $sasToken -StorageAccount $StorageAccount
+Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild1" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $sasToken -StorageAccount $StorageAccount
 
 
 ###################################################################
