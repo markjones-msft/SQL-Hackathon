@@ -56,7 +56,3 @@ $Shortcut     = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
 $Shortcut.Save()
 
-# Create a file share for DMS
-New-SMBShare –Name “FILESHARE” –Path $Fileshare `
- –ContinuouslyAvailable `
- –FullAccess .\Administrators

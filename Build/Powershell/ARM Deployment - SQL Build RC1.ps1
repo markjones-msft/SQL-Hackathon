@@ -101,4 +101,9 @@ sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\1- CREAT
 sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\2- RESTORE Databases.sql"
 sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\3- RESTORE FIXES.sql"
 
+# Create a file share for DMS
+New-SMBShare –Name “FILESHARE” –Path $Fileshare `
+ –ContinuouslyAvailable `
+ –FullAccess .\Administrators
+
 Return;

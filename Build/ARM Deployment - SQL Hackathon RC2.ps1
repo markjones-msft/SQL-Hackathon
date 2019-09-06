@@ -118,10 +118,12 @@ $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/m
 
 Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "SharedServicesBuild"
 
-# Setup KeyVault 
-New-AzKeyVault -Name sqlhack-keyvault -ResourceGroupName $SharedRG -Location $Location -EnableSoftDelete
+# Setup KeyVault
+$Random = Get-Random -Maximum 99999
+$Keyvault = "sqlhack-keyvault-$Random"
+New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location -EnableSoftDelete
 
-Get-AzKeyVault -Name sqlhack-keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
+Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
 
 
