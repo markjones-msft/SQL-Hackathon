@@ -56,3 +56,4 @@ $Shortcut     = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
 $Shortcut.Save()
 
+EXIT;

@@ -106,4 +106,4 @@ New-SMBShare –Name “FILESHARE” –Path $Fileshare `
  –ContinuouslyAvailable `
  –FullAccess .\Administrators
 
-Return;
+EXIT

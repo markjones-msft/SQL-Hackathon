@@ -54,6 +54,8 @@ else {   `
     $subscriptionMessage = ("Actually targeting Azure subscription: {0} - {1}." -f $subscriptionID, $subscriptionName)}
 Write-Host -BackgroundColor Black -ForegroundColor Yellow $subscriptionMessage
 
+if (($response = read-host "Please ensure this is the correct subscription. Press a to abort, any other key to continue.") -eq "a") {Return}
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Continuing to build.................................................."
 
 ###################################################################
 # Setup Vaiables
@@ -144,6 +146,22 @@ $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/m
 Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG
 
 #Create Blob Storage Container and SASURI Key.
+$StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
+$StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
+$Key0 = $StorageAccountKeys | Select-Object -First 1 -ExpandProperty Value
+$Context = New-AzStorageContext -StorageAccountName $StorageAccount -StorageAccountKey $Key0
+
+New-AzStorageContainer -Context $Context -Name migration2
+
+$storagePolicyName = “rawsamples-policy”
+$expiryTime = (Get-Date).AddYears(1)
+New-AzStorageContainerStoredAccessPolicy -Container migration2 -Policy $storagePolicyName -Permission rl -ExpiryTime $expiryTime -Context $Context
+
+$sasToken = (New-AzStorageContainerSASToken -Name migration2 -Policy $storagePolicyName -Context $Context).substring(1)
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
+Write-host -BackgroundColor Black -ForegroundColor Yellow $sasToken
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
 
 ###################################################################
 # Setup Managed Instance
