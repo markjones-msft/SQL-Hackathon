@@ -175,6 +175,6 @@ Write-Host -BackgroundColor Black -ForegroundColor Yellow "Enviroment Build in p
 
 Write-Warning "NOTE: THE FOLLOWING  POST BUILD TASKS ARE REQUIRED."
 Write-Warning "1. DataFactory Build Ok. You will need to start the integration runtime and enable AHUB"
-Write-Warning "2. Create SASURI Key to the Azure Blob Storage for Data Migration tasks"
+Write-Warning "2. COPY the SASURI Key tas this will be needed for the Data Migration tasks"
 
 
