@@ -127,18 +127,18 @@ Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPr
 if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
 
 #Create Blob Storage Container and SASURI Key.
-$StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
-$StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
-$Key0 = $StorageAccountKeys | Select-Object -First 1 -ExpandProperty Value
-$Context = New-AzStorageContext -StorageAccountName $StorageAccount -StorageAccountKey $Key0
+#$StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
+#$StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
+#$Key0 = $StorageAccountKeys | Select-Object -First 1 -ExpandProperty Value
+#$Context = New-AzStorageContext -StorageAccountName $StorageAccount -StorageAccountKey $Key0
 
-New-AzStorageContainer -Context $Context -Name migration2
+#New-AzStorageContainer -Context $Context -Name migration
 
-$storagePolicyName = “rawsamples-policy”
-$expiryTime = (Get-Date).AddYears(1)
-New-AzStorageContainerStoredAccessPolicy -Container migration2 -Policy $storagePolicyName -Permission rl -ExpiryTime $expiryTime -Context $Context
+#$storagePolicyName = “rawsamples-policy”
+#$expiryTime = (Get-Date).AddYears(1)
+#New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission rl -ExpiryTime $expiryTime -Context $Context
 
-$sasToken = (New-AzStorageContainerSASToken -Name migration2 -Policy $storagePolicyName -Context $Context).substring(1)
+#$sasToken = (New-AzStorageContainerSASToken -Name migration -Policy $storagePolicyName -Context $Context).substring(1)
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
 Write-host -BackgroundColor Black -ForegroundColor Yellow $sasToken
@@ -160,7 +160,7 @@ Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "L
 ###################################################################
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
-$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC1.json"
+$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC2.json"
 Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG
 
 
