@@ -32,11 +32,11 @@ Function Run-ARMTemplate
                 {
                     New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateUri -Name $Name
                 }
-            }
-        else 
+            }  
+        else   
         {
-             $scriptBlock = {
-                param ($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount)
+             $scriptBlock = {  
+                param ($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount)  `
                 New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateUri -Name $Name -vmCount $vmCount -SharedResourceGroup $SharedResourceGroup}
             
                 Start-Job -ScriptBlock $scriptBlock -ArgumentList @($ResourceGroupName,$TemplateUri,$Name, $SharedResourceGroup, $vmCount)
@@ -56,7 +56,7 @@ else {   `
     $subscriptionMessage = ("Actually targeting Azure subscription: {0} - {1}." -f $subscriptionID, $subscriptionName)}
 Write-Host -BackgroundColor Black -ForegroundColor Yellow $subscriptionMessage
 
-if (($response = read-host "Please ensure this is the correct subscription. Press a to abort, any other key to continue.") -eq "a") {Return}
+if (($response = read-host "Please ensure this is the correct subscription. Press a to abort, any other key to continue.") -eq "a") {Exit}
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Continuing to build.................................................."
 
 ###################################################################
@@ -74,12 +74,8 @@ If ($TeamVMCount -gt 20)
 
 $DefaultValue = "NorthEurope"
 if (($Location = Read-Host "Please enter the Location of the Resource Groups. (default value: $DefaultValue)") -eq '') {$Location = $DefaultValue}
-If (“NorthEurope”,”WestEurope”,”UKSouth”, "UKWest" -NotContains $Location)
-{
-    Write-Warning "Unrecognised location. Setting to Default $DefaultValue"
-    $Location = "NorthEurope"
-
-}
+If ($Location  -NotContains “NorthEurope”,”WestEurope”,”UKSouth”, "UKWest")
+{Write-Warning "Unrecognised location. Setting to Default $DefaultValue" ; $Location = "NorthEurope"}
 
 $DefaultValue = "SQLHACK-SHARED"
 if (($SharedRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$SharedRG = $DefaultValue}
