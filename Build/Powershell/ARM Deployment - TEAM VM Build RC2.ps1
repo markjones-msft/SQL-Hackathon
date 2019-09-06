@@ -30,6 +30,18 @@ Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/H
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20LAB%20-%20Data%20Migration/SimpleTranReportApp.exe?raw=true' -OutFile "$Labs1Path\SimpleTranReportApp.exe"
 
 #Download Items for LAB 02
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/02%20SSIS%20Migration/02-SSIS%20Migration.zip?raw=true' -OutFile "$InstallPath\Lab2.zip"
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+function Unzip
+{
+    param([string]$zipfile, [string]$outpath)
+
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
+}
+
+Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 
 #Download Items for LAB 03
 
@@ -42,10 +54,17 @@ Invoke-Command -ScriptBlock $pathArgs
 Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile "$InstallPath\DataMigrationAssistant.msi"
 Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\Install\dma_install.txt' -passthru | wait-process
 
+
 # Download and install SSDT
-#Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe' | wait-process
-#Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\ssdt_install_bits /passive /log C:\Install\SSDTLayout_install.txt' -wait
-#Start-Process -file 'C:\Install\ssdt_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLIS /passive /norestart /log C:\Install\SSDT_install.txt' -wait
+Invoke-WebRequest 'https://aka.ms/vs/15/release/vs_sql.exe' -OutFile "$InstallPath\vs_sql.exe" | wait-process
+Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe' | wait-process
+
+#vs_sql.exe --layout c:\<filepath> --lang en-u
+Start-Process -file 'C:\Install\vs_sql.exe' -arg '--layout c:\install\vs_install_bits --lang en-us --quiet --log C:\Install\VSLayout_install.txt' -wait
+Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\vs_install_bits /quiet /log C:\Install\SSDTLayout_install.txt' -wait
+
+Start-Process -file 'C:\Install\vs_install_bits\vs_setup.exe' -arg '--noweb --quiet' -wait
+Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLIS /quiet /norestart /log C:\Install\SSDT_install.txt'
 
 # Create Shortcut on desktop
 $TargetFile   = "C:\_SQLHACK_\"
