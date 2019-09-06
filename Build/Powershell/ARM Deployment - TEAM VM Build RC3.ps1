@@ -44,9 +44,6 @@ Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 #Download Items for LAB 03
 $StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
 
-
-
-
 # Download and install SQL Server Management Studio
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe'
 $pathArgs = {C:\Install\SSMS-Setup.exe /S /v/qn}
