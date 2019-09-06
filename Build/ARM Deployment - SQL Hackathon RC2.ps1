@@ -130,19 +130,6 @@ New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location
 Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
 
-
-###################################################################
-# Setup SQL Legacy Server
-###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server................................................."
-
-$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20RC1.json"
-Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "LegacySQLBuild"
-
-
-###################################################################
-# Setup Team VM's
-###################################################################
 #Create Blob Storage Container and SASURI Key.
 $StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
 $StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
@@ -160,6 +147,21 @@ $sasToken = (New-AzStorageContainerSASToken -Name migration2 -Policy $storagePol
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
 Write-host -BackgroundColor Black -ForegroundColor Yellow $sasToken
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
+
+
+
+###################################################################
+# Setup SQL Legacy Server
+###################################################################
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server................................................."
+
+$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20RC1.json"
+Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "LegacySQLBuild"
+
+
+###################################################################
+# Setup Team VM's
+###################################################################
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC1.json"
