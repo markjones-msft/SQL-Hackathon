@@ -42,7 +42,10 @@ function Unzip
 Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 
 #Download Items for LAB 03
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/03%20Security/Hands-on-Lab%20-%20Data%20Security.docx?raw=truee' -OutFile "$InstallPath\Hands-on Lab - Security.docx"
 $StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
+
 
 # Download and install SQL Server Management Studio
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe'
