@@ -36,6 +36,7 @@
         "SASURIKey": {
             "defaultValue": "SQLHACK-SHARED",
             "type": "string",
+            "maxLength": 128,
             "metadata": {
                 "description": "The SASURI for the hack"
             }
@@ -43,6 +44,7 @@
         "StorageAccount": {
             "defaultValue": "SQLHACK-SHARED",
             "type": "string",
+            "maxLength": 128,
             "metadata": {
                 "description": "The sa the hack"
             }
@@ -51,7 +53,7 @@
     "variables": {
         "location": "[resourceGroup().location]",
         "virtualMachineSize": "Standard_D2_v3",
-        "jbVirtualMachineName": "vm-TEAMT",
+        "jbVirtualMachineName": "vm-TEAMT1",
         "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",

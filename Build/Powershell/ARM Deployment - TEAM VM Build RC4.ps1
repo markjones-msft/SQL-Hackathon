@@ -22,8 +22,8 @@ md -Path $Labs3Path
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20LAB%20-%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20LAB%20and%20Parameters.docx?raw=true' -OutFile "$Labs1Path\Hands-on Lab - Data Migration.docx"
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20LAB%20-%20Data%20Migration/SimpleTranReportApp.exe?raw=true' -OutFile "$Labs1Path\SimpleTranReportApp.exe"
 
-$SASURIKey | out-file -FilePath "$Labs1Path\SASKEY.txt"
-$StorageAccount | out-file -FilePath "$Labs1Path\StorageAccount.txt"
+$SASURIKey | out-file -FilePath "$Labs1Path\SASKEY_$SASURIKey.txt"
+$StorageAccount | out-file -FilePath "$Labs1Path\StorageAccount_$StorageAccount.txt"
 
 #Download Items for LAB 02
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -43,7 +43,7 @@ Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 
 #Download Items for LAB 03
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/03%20Security/Hands-on-Lab%20-%20Data%20Security.docx?raw=truee' -OutFile "$InstallPath\Hands-on Lab - Security.docx"
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/03%20Security/Hands-on-Lab%20-%20Data%20Security.docx?raw=truee' -OutFile "$Labs3Path\Hands-on Lab - Security.docx"
 $StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
 
 
