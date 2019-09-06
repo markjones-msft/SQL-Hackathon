@@ -42,7 +42,7 @@
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",
         "virtualNetworkName": "[concat(parameters('SharedResourceGroup'), '-vnet')]",
-        "jbCustomScriptFileName": "ARM%20Deployment%20-%20TEAM%20VM%20Build%20RC1.ps1",
+        "jbCustomScriptFileName": "ARM%20Deployment%20-%20TEAM%20VM%20Build%20RC2.ps1",
         "jbCustomScriptUri": "[concat('https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Powershell/', variables('jbCustomScriptFileName'))]",
         "managementSubnetName": "TeamJumpServers"
     },
