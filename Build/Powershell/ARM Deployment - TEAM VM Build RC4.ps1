@@ -59,15 +59,15 @@ Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\In
 
 # Download and install SSDT
 #Invoke-WebRequest 'https://aka.ms/vs/15/release/vs_sql.exe' -OutFile "$InstallPath\vs_sql.exe" 
-Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe' 
+Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe'
 
 #Start-Process -file 'C:\Install\vs_sql.exe' -arg '--layout c:\install\vs_install_bits --lang en-us --quiet --log C:\Install\VSLayout_install.txt' | Out-Null
 #Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\vs_install_bits /quiet /log C:\Install\SSDTLayout_install.txt' -wait -PassThru
 
-start-sleep 30
+start-sleep 10
 
 #Start-Process -file 'C:\Install\vs_install_bits\vs_setup.exe' -arg '--noweb --quiet' -wait
-Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLALL /quiet /norestart /log C:\Install\SSDT_install.txt' -wait -PassThru -LoadUserProfile ".\Demouser"
+Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLALL /quiet /norestart /log C:\Install\SSDT_install.txt' -wait -PassThru
 
 # Create Shortcut on desktop
 $TargetFile   = "C:\_SQLHACK_\"
