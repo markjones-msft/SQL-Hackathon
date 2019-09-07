@@ -62,7 +62,6 @@ Write-Host -BackgroundColor Black -ForegroundColor Yellow "Continuing to build..
 ###################################################################
 # Setup Vaiables
 ###################################################################
-
 $DefaultValue = 5
 if (($TeamVMCount = Read-Host "Please enter the number of Team VM's required (1-20) (default value: $DefaultValue)") -eq '') {$TeamVMCount = $DefaultValue}
 If ($TeamVMCount -gt 20)
@@ -74,20 +73,19 @@ If ($TeamVMCount -gt 20)
 
 $DefaultValue = "NorthEurope"
 if (($Location = Read-Host "Please enter the Location of the Resource Groups. (default value: $DefaultValue)") -eq '') {$Location = $DefaultValue}
-If ($Location  -NotContains “NorthEurope”,”WestEurope”,”UKSouth”, "UKWest")
-{Write-Warning "Unrecognised location. Setting to Default $DefaultValue" ; $Location = "NorthEurope"}
+If (“NorthEurope”,”WestEurope”,”UKSouth”, "UKWest" -NotContains $Location  ) {Write-Warning "Unrecognised location. Setting to Default $DefaultValue" ; $Location = "NorthEurope"}
 
 $DefaultValue = "SQLHACK-SHARED"
 if (($SharedRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$SharedRG = $DefaultValue}
 
 # Check Resource Groups do not already exist
-#Get-AzResourceGroup -name $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
+Get-AzResourceGroup -name $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 #if (!($notPresent)) {Write-Warning "Resource Group $SharedRG already exisits. Please check retry"; return;}
 
 $DefaultValue = "SQLHACK-TEAM_VMs"
 if (($TeamRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$TeamRG = $DefaultValue}
 
-#Get-AzResourceGroup -name $TeamRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
+Get-AzResourceGroup -name $TeamRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 #if (!($notPresent)) {Write-Warning "Resource Group $TeamRG already exisits. Please check retry"; return;}
 
 ###################################################################
@@ -96,7 +94,6 @@ if (($TeamRG = Read-Host "Please Shared resource group name. (default value: $De
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating Subscriptions $SharedRG and $TeamRG.................................................."
 New-AzResourceGroup -Name $SharedRG -Location $Location 
 New-AzResourceGroup -Name $TeamRG -Location $Location
-
 
 ###################################################################
 # Setup Network
@@ -164,10 +161,14 @@ if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check 
 ###################################################################
 # Setup Team VM's
 ###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC4.json"
 Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount
+
+New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount
+
+write-host $JsonSASURI
 
 
 ###################################################################

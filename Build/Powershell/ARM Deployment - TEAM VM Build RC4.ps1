@@ -9,7 +9,9 @@ $Labs1Path = 'C:\_SQLHACK_\LABS\01-Data_Migration'
 $Labs2Path = 'C:\_SQLHACK_\LABS\02-SSIS_Migration'
 $Labs3Path = 'C:\_SQLHACK_\LABS\03-Security'
 
+##################################################################
 #Create Folders for Labs and Installs
+##################################################################
 md -Path $LabsPath
 md -Path $InstallPath
 md -Path $Labs1Path
@@ -27,14 +29,10 @@ Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackatho
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20Lab%20Step-by-step.docx?raw=true' -OutFile "$Labs1Path\DB Migration Lab Step-by-step.docx"
 
 $SASURIKey | out-file -FilePath "$Labs1Path\SASKEY.txt"
-#$StorageAccount | out-file -FilePath "$Labs1Path\StorageAccount.txt"
 
 #Download Items for LAB 02
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/02%20SSIS%20Migration/02-SSIS%20Migration.zip?raw=true' -OutFile "$InstallPath\Lab2.zip"
-
-#$SASURIKey | out-file -FilePath "$Labs2Path\SASKEY.txt"
-#$StorageAccount | out-file -FilePath "$Labs2Path\StorageAccount.txt"
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 function Unzip
@@ -51,7 +49,10 @@ Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/03%20Security/Hands-on-Lab%20-%20Data%20Security.docx?raw=truee' -OutFile "$Labs3Path\Hands-on Lab - Security.docx"
 $StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
 
+
+#########################################################################
 #Install Applications
+#########################################################################
 
 # Download and install SSDT
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe'
@@ -59,18 +60,21 @@ Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\vs_
 start-sleep 10
 Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/INSTALLVSSQL /install INSTALLALL /norestart /passive /log C:\Install\SSDT_install.txt' -wait 
 
-# Download and install SQL Server Management Studio
-Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe'
-$pathArgs = {C:\Install\SSMS-Setup.exe /S /v/qn}
-Invoke-Command -ScriptBlock $pathArgs 
-
 # Download and install Data Mirgation Assistant
 Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile "$InstallPath\DataMigrationAssistant.msi"
 Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\Install\dma_install.txt' -passthru 
 
 # Download Storage Explorer
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?LinkId=708343&clcid=0x409' -OutFile "$InstallPath\StorageExplore.exe"
-Start-Process -file 'C:\Install\StorageExplore.exe' -arg '/VERYSILENT /NORESTART /LOG C:\Install\StorageExplore_install.txt'
+Start-Process -file 'C:\Install\StorageExplore.exe' -arg '/VERYSILENT /norestart /LOG C:\Install\StorageExplore_install.txt'
+
+# Download and install SQL Server Management Studio
+Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe'
+start-sleep 5
+#$pathArgs = {C:\Install\SSMS-Setup.exe /S /v/qn}
+#Invoke-Command -ScriptBlock $pathArgs 
+Start-Process -file 'C:\Install\SSMS-Setup.exe' -arg '/passive /install /norestart /quiet /log C:\Install\SSMS_install.txt' -wait 
+
 
 # Create Shortcut on desktop
 $TargetFile   = "C:\_SQLHACK_\"
