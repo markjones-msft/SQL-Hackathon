@@ -135,7 +135,6 @@ read-host "Please Copy SASURI Key. Press any key to continue."
 
 $JsonSASURI = $SASUri | ConvertTo-Json
 
-
 ###################################################################
 # Setup SQL Legacy Server
 ###################################################################
@@ -162,14 +161,13 @@ Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPr
 if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
 
 
-
 ###################################################################
 # Setup Team VM's
 ###################################################################
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20RC4.json"
-Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount
+Run-ARMTemplate  -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild22" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount
 
 
 ###################################################################
