@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.1",
     "parameters": {
         "managedInstanceName": {
-            "defaultValue": "sqlhackmi",
+            "defaultValue": "sqlhack-mi",
             "type": "string",
             "maxLength": 13,
             "metadata": {

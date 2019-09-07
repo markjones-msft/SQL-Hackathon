@@ -5,8 +5,8 @@
 
 $InstallPath = 'C:\Install'
 $LabsPath = 'C:\_SQLHACK_\LABS'
-$Labs1Path = 'C:\_SQLHACK_\LABS\01-Data Migration'
-$Labs2Path = 'C:\_SQLHACK_\LABS\02-SSIS Migration'
+$Labs1Path = 'C:\_SQLHACK_\LABS\01-Data_Migration'
+$Labs2Path = 'C:\_SQLHACK_\LABS\02-SSIS_Migration'
 $Labs3Path = 'C:\_SQLHACK_\LABS\03-Security'
 
 #Create Folders for Labs and Installs
