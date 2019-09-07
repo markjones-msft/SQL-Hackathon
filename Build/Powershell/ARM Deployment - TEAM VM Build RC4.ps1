@@ -47,6 +47,13 @@ Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/03%20Security/Hands-on-Lab%20-%20Data%20Security.docx?raw=truee' -OutFile "$Labs3Path\Hands-on Lab - Security.docx"
 $StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
 
+#Install Applications
+
+# Download and install SSDT
+Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe'
+Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\vs_install_bits /quiet /log C:\Install\SSDTLayout_install.txt' -wait
+start-sleep 10
+Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/INSTALLVSSQL /install INSTALLALL /norestart /passive /log C:\Install\SSDT_install.txt' -wait 
 
 # Download and install SQL Server Management Studio
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe'
@@ -57,17 +64,9 @@ Invoke-Command -ScriptBlock $pathArgs
 Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile "$InstallPath\DataMigrationAssistant.msi"
 Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\Install\dma_install.txt' -passthru 
 
-# Download and install SSDT
-#Invoke-WebRequest 'https://aka.ms/vs/15/release/vs_sql.exe' -OutFile "$InstallPath\vs_sql.exe" 
-Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe'
-
-#Start-Process -file 'C:\Install\vs_sql.exe' -arg '--layout c:\install\vs_install_bits --lang en-us --quiet --log C:\Install\VSLayout_install.txt' | Out-Null
-#Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\vs_install_bits /quiet /log C:\Install\SSDTLayout_install.txt' -wait -PassThru
-
-start-sleep 10
-
-#Start-Process -file 'C:\Install\vs_install_bits\vs_setup.exe' -arg '--noweb --quiet' -wait
-Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLALL /quiet /norestart /log C:\Install\SSDT_install.txt' -wait -PassThru
+# Download Storage Explorer
+Invoke-WebRequest 'https://go.microsoft.com/fwlink/?LinkId=708343&clcid=0x409' -OutFile "$InstallPath\StorageExplore.exe"
+Start-Process -file 'C:\Install\StorageExplore.exe' -arg '/VERYSILENT /NORESTART /LOG C:\Install\StorageExplore_install.txt'
 
 # Create Shortcut on desktop
 $TargetFile   = "C:\_SQLHACK_\"
@@ -76,5 +75,3 @@ $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut     = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
 $Shortcut.Save()
-
-Return;

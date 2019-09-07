@@ -109,31 +109,6 @@ Run-ARMTemplate -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "Ne
 Get-AzVirtualNetwork -Name "$SharedRG-vnet" -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if ($notPresent) {Write-Warning "VNET Failed to build. Please check and retry";return;}
 
-###################################################################
-# Setup SQL Legacy Server
-###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server................................................."
-
-$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20RC1.json"
-Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "LegacySQLBuild"
-
-
-###################################################################
-# Setup Shared Resources
-###################################################################
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating DMS, Datafactory, Keyvault, storage account shared resources.................................................."
-$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20RC1.json"
-
-Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "SharedServicesBuild" -Wait "True"
-
-# Setup KeyVault
-$Random = Get-Random -Maximum 99999
-$Keyvault = "sqlhack-keyvault-$Random"
-New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location -EnableSoftDelete
-
-Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
-if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
-
 #Create Blob Storage Container and SASURI Key.
 $StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
 $StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
@@ -152,13 +127,39 @@ $SASUri = ($context.BlobEndPoint.tostring())
 $SASUri = $SASUri + "migration?$sasToken"
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
-Write-host -BackgroundColor Black -ForegroundColor Yellow $sasToken
+Write-host -BackgroundColor Black -ForegroundColor Yellow $SASUri
 Write-host -BackgroundColor Black -ForegroundColor Yellow "Storage account name: $StorageAccount"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
 
 read-host "Please Copy SASURI Key. Press any key to continue."
 
-$JsonSASURI = $sasToken | ConvertTo-Json
+$JsonSASURI = $SASUri | ConvertTo-Json
+
+
+###################################################################
+# Setup SQL Legacy Server
+###################################################################
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server................................................."
+
+$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20RC1.json"
+Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "LegacySQLBuild"
+
+
+###################################################################
+# Setup Shared Resources
+###################################################################
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating DMS, Datafactory, Keyvault, storage account shared resources.................................................."
+$TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Shared%20-%20RC1.json"
+
+Run-ARMTemplate  -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "SharedServicesBuild" 
+
+# Setup KeyVault
+$Random = Get-Random -Maximum 99999
+$Keyvault = "sqlhack-keyvault-$Random"
+New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location -EnableSoftDelete
+
+Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
+if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
 
 
 

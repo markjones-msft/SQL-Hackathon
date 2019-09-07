@@ -53,7 +53,7 @@
     "variables": {
         "location": "[resourceGroup().location]",
         "virtualMachineSize": "Standard_D2_v3",
-        "jbVirtualMachineName": "vm-TEAMT3",
+        "jbVirtualMachineName": "vm-TEAM_4",
         "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",
@@ -82,7 +82,7 @@
                 },
                 "storageProfile": {
                     "osDisk": {
-                        "name" :  "[concat(concat(variables('jbNetworkInterfaceName'),copyIndex(1), '_OsDisk_1'))]",
+                        "name" :  "[concat(concat(variables('jbVirtualMachineName'),copyIndex(1), '_OsDisk_1'))]",
                         "createOption": "fromImage",
                         "managedDisk": {
                             "storageAccountType": "StandardSSD_LRS"
