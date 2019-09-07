@@ -23,8 +23,8 @@ $SASURIKey = $SASURIKey | ConvertFrom-Json
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20LAB%20-%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20LAB%20and%20Parameters.docx?raw=true' -OutFile "$Labs1Path\Hands-on Lab - Data Migration.docx"
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20LAB%20-%20Data%20Migration/SimpleTranReportApp.exe?raw=true' -OutFile "$Labs1Path\SimpleTranReportApp.exe"
 
-$SASURIKey | out-file -FilePath "$Labs1Path\SASKEY_$SASURIKey.txt"
-$StorageAccount | out-file -FilePath "$Labs1Path\StorageAccount_$StorageAccount.txt"
+$SASURIKey | out-file -FilePath "$Labs1Path\SASKEY.txt"
+$StorageAccount | out-file -FilePath "$Labs1Path\StorageAccount.txt"
 
 #Download Items for LAB 02
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -57,16 +57,17 @@ Invoke-Command -ScriptBlock $pathArgs
 Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile "$InstallPath\DataMigrationAssistant.msi"
 Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\Install\dma_install.txt' -passthru 
 
-
 # Download and install SSDT
-Invoke-WebRequest 'https://aka.ms/vs/15/release/vs_sql.exe' -OutFile "$InstallPath\vs_sql.exe" 
+#Invoke-WebRequest 'https://aka.ms/vs/15/release/vs_sql.exe' -OutFile "$InstallPath\vs_sql.exe" 
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe' 
 
 #Start-Process -file 'C:\Install\vs_sql.exe' -arg '--layout c:\install\vs_install_bits --lang en-us --quiet --log C:\Install\VSLayout_install.txt' | Out-Null
-Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\vs_install_bits /quiet /log C:\Install\SSDTLayout_install.txt' -wait -NoNewWindow
+#Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\vs_install_bits /quiet /log C:\Install\SSDTLayout_install.txt' -wait -PassThru
+
+start-sleep 30
 
 #Start-Process -file 'C:\Install\vs_install_bits\vs_setup.exe' -arg '--noweb --quiet' -wait
-Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLIS /quiet /norestart /log C:\Install\SSDT_install.txt' -NoNewWindow
+Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/install INSTALLALL /quiet /norestart /log C:\Install\SSDT_install.txt' -wait -PassThru -LoadUserProfile ".\Demouser"
 
 # Create Shortcut on desktop
 $TargetFile   = "C:\_SQLHACK_\"
@@ -75,3 +76,5 @@ $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut     = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
 $Shortcut.Save()
+
+Return;

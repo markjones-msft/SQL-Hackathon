@@ -147,7 +147,9 @@ $storagePolicyName = “Migration-Policy”
 $expiryTime = (Get-Date).AddYears(1)
 New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission rl -ExpiryTime $expiryTime -Context $Context
 
-$sasToken = (New-AzStorageContainerSASToken -Name migration -Policy $storagePolicyName -Context $Context).substring(1)
+$sasToken = (New-AzStorageContainerSASToken -Name "migration" -Policy $storagePolicyName -Context $Context).substring(1)
+$SASUri = ($context.BlobEndPoint.tostring())
+$SASUri = $SASUri + "migration?$sasToken"
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
 Write-host -BackgroundColor Black -ForegroundColor Yellow $sasToken
