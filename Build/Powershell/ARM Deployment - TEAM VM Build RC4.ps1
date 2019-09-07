@@ -27,13 +27,13 @@ Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackatho
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20Lab%20Step-by-step.docx?raw=true' -OutFile "$Labs1Path\DB Migration Lab Step-by-step.docx"
 
 $SASURIKey | out-file -FilePath "$Labs1Path\SASKEY.txt"
-$StorageAccount | out-file -FilePath "$Labs1Path\StorageAccount.txt"
+#$StorageAccount | out-file -FilePath "$Labs1Path\StorageAccount.txt"
 
 #Download Items for LAB 02
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/02%20SSIS%20Migration/02-SSIS%20Migration.zip?raw=true' -OutFile "$InstallPath\Lab2.zip"
-$SASURIKey | out-file -FilePath "$Labs2Path\SASKEY.txt"
-$StorageAccount | out-file -FilePath "$Labs2Path\StorageAccount.txt"
+#$SASURIKey | out-file -FilePath "$Labs2Path\SASKEY.txt"
+#$StorageAccount | out-file -FilePath "$Labs2Path\StorageAccount.txt"
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 function Unzip
