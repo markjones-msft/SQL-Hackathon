@@ -82,7 +82,7 @@
                 },
                 "storageProfile": {
                     "osDisk": {
-                        "name" :  "[concat(concat(variables('jbVirtualMachineName'),if (less(copyIndex(1), 10), concat('0', copyIndex(1)), copyIndex(1)), '_OsDisk_1'))]",
+                        "name" :  "[concat('OsDisk_1_',concat(variables('jbVirtualMachineName'),if (less(copyIndex(1), 10), concat('0', copyIndex(1)), copyIndex(1))))]",
                         "createOption": "fromImage",
                         "managedDisk": {
                             "storageAccountType": "StandardSSD_LRS"
