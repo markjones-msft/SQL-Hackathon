@@ -60,7 +60,8 @@
         "virtualNetworkName": "[concat(parameters('SharedResourceGroup'), '-vnet')]",
         "jbCustomScriptFileName": "ARM%20Deployment%20-%20TEAM%20VM%20Build%20RC4.ps1",
         "jbCustomScriptUri": "[concat('https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/Powershell/', variables('jbCustomScriptFileName'))]",
-        "managementSubnetName": "TeamJumpServers"
+        "managementSubnetName": "TeamJumpServers",
+        "VMnameCount" : ""
     },
 
     "resources": [
@@ -69,7 +70,9 @@
             "name": "nodeCopy",
             "count": "[parameters('vmCount')]"
         },
-            "name": "[concat(variables('jbVirtualMachineName'), if (lessOrEquals(copyIndex(1), 10), concat('0', copyIndex(1)), copyIndex(1)))]",
+            
+            "VMnameCount" : "[if(lessorequals(parameters('vmCount'),10),concat('0',parameters('vmCount')),parameters('vmCount'))]",
+            "name": "[variables('VMnameCount')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2019-03-01",
             "location": "[variables('location')]",
