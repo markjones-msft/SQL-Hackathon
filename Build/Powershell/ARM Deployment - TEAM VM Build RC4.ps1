@@ -22,11 +22,11 @@ $SASURIKey = $SASURIKey | ConvertFrom-Json
 
 #Download Items for LAB 01
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/Background.rtf?raw=true' -OutFile "C:\_SQLHACK_\Lab Background.rtf"
-Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20LAB%20and%20Parameters.docx?raw=true' -OutFile "$Labs1Path\Hands-on Lab - Data Migration.docx"
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/raw/master/Hands-On%20Lab/Background.pdf' -OutFile "C:\_SQLHACK_\Lab Background.pdf"
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/raw/master/Hands-On%20Lab/01%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20LAB%20and%20Parameters.pdf' -OutFile "$Labs1Path\Hands-on Lab - Data Migration.pdf"
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20Data%20Migration/SimpleTranReportApp.exe?raw=true' -OutFile "$Labs1Path\SimpleTranReportApp.exe"
 Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/01%20Data%20Migration/Migration%20Helper%20Script.sql' -OutFile "$Labs1Path\Migration Helper Script.txt"
-Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20Lab%20Step-by-step.docx?raw=true' -OutFile "$Labs1Path\DB Migration Lab Step-by-step.docx"
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20Lab%20Step-by-step.docx?raw=true' -OutFile "$Labs1Path\DB Migration Lab Step-by-step.pdf"
 
 $SASURIKey | out-file -FilePath "$Labs1Path\SASKEY.txt"
 
@@ -46,7 +46,7 @@ Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 
 #Download Items for LAB 03
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/03%20Security/Hands-on-Lab%20-%20Data%20Security.docx?raw=truee' -OutFile "$Labs3Path\Hands-on Lab - Security.docx"
+Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/raw/master/Hands-On%20Lab/03%20Security/Hands-on-Lab%20-%20Data%20Security.pdf' -OutFile "$Labs3Path\Hands-on Lab - Security.pdf"
 $StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
 
 
