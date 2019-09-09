@@ -1,5 +1,6 @@
 SQL Server Migration Hack
 Background Scenario
+
 Trading incorporated is an online trading company. Founded in 2008, the company has experience exponential growth since releasing its online trading platform. As part of their monitoring of ongoing trades, the company uses a legacy Application called the “Online Transaction Monitor”, which was originally written in VB6 and developed against a SQL Server 2008r2 Databases.
 Trading incorporated have started to find that the management of the SQL Server 2008 database is becoming too much to manage with the current support staff, and would like to reduce this burden on their support teams. As their service has also increased in popularity, the Stand-alone SQL server this database currently uses does not meet the 99.99% SLA for availability required, and they would prefer to use supported Windows and OS versions.
 
