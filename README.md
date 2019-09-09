@@ -13,7 +13,7 @@ Target audience
 
 Hands-on labs
 
-In this hands-on lab, you will implement a proof-of-concept (PoC) for migrating an on-premises SQL Server 2008 R2 database into Azure SQL Database Managed Instance (SQL MI). You will perform assessments to reveal any feature parity and compatibility issues between the on-premises SQL Server 2008 R2 database and the managed database offerings in Azure. You will then migrate the customer's on-premises databases into Azure, using migration services. Finally, you will enable some of the advanced SQL features available in SQL MI to improve security and performance in the customer's application.
+In this hands-on lab, you will implement a proof-of-concept (PoC) for migrating an on-premises SQL Server 2008 R2 database into Azure SQL Database Managed Instance (SQL MI). You will perform assessments to reveal any feature parity and compatibility issues between the on-premises SQL Server 2008 R2 database and the managed database offerings in Azure. You will then migrate the customer's on-premises databases into Azure, using migration services. Additonaly, you will migrate SSIS packages from on premise into Azure PaaS Services. Finally, you will enable some of the advanced SQL features available in SQL MI to improve security and performance in the customer's application.
 At the end of this hands-on lab, you will be better able to implement a cloud migration solution for business-critical applications and databases.
 
 Lab Architecture
