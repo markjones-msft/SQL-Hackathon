@@ -24,7 +24,7 @@ At the end of this hands-on lab, you will be better able to implement a cloud mi
 
 The following diagram provides an overview of the Lab environment that will be built.
 
-![](Hands-On Lab/SQLHack Architecture.jpg)
+![](http://https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/SQLHack%20Architecture.jpg)
 
 NOTE: There are up to 20 workshop environments using a SHARED source SQL Server and Target Azure SQL Database. Please be respectful of only migrating your teams Databases and Logins.
 
