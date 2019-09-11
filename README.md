@@ -7,6 +7,8 @@ Trading incorporated would like to run a Proof of Concept (PoC) the “Online Tr
 
 ## Target audience ##
 
+Up to 20 Teams of:
+
 * Database administrators
 * SQL/Database developers
 * Application developers
