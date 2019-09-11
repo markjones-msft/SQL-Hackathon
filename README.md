@@ -24,7 +24,9 @@ At the end of this hands-on lab, you will be better able to implement a cloud mi
 
 The following diagram provides an overview of the Lab environment that will be built.
 
-![](http://https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/SQLHack%20Architecture.jpg)
+![](https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/SQLHack%20Architecture.png)
+
+
 
 ![Microsoft Cloud Workshops](https://github.com/Microsoft/MCW-Template-Cloud-Workshop/raw/master/Media/ms-cloud-workshop.png "Microsoft Cloud Workshops")
 
