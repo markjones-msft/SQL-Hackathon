@@ -32,7 +32,7 @@ The following diagram provides an overview of the Lab environment that will be b
 * Azure SQL Database (SQL DB)
 * Azure Database Migration Service (DMS)
 * Microsoft Data Migration Assistant (DMA)
-* SQL Server
+* SQL Server 2008
 * SQL Server on VM
 * SQL Server Management Studio (SSMS)
 * Azure virtual machines
