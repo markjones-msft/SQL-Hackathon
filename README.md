@@ -14,14 +14,14 @@ Up to 20 Teams of:
 * Application developers
 
 ## Hands-on labs ##
-**These Hands-on labs are built for a classroom environment of up to 20 teams within a single subscription.**
-
-In this hands-on lab, you will implement a proof-of-concept (PoC) for migrating an on-premises SQL Server 2008 R2 database into Azure SQL Database Managed Instance (SQL MI). You will perform assessments to reveal any feature parity and compatibility issues between the on-premises SQL Server 2008 R2 database and the managed database offerings in Azure. You will then migrate the customer's on-premises databases into Azure, using migration services. Additionally, you will migrate SSIS packages from on premise into Azure PaaS Services. Finally, you will enable some of the advanced SQL features available in SQL MI to improve security and performance in the customer's application.
+In these hands-on labs, you will implement a proof-of-concept (PoC) for migrating an on-premises SQL Server 2008 R2 database into Azure SQL Database Managed Instance (SQL MI). You will perform assessments to reveal any feature parity and compatibility issues between the on-premises SQL Server 2008 R2 database and the managed database offerings in Azure. You will then migrate the customer's on-premises databases into Azure, using migration services. Additionally, you will migrate SSIS packages from on premise into Azure PaaS Services. Finally, you will enable some of the advanced SQL features available in SQL MI to improve security and performance in the customer's application.
 At the end of this hands-on lab, you will be better able to implement a cloud migration solution for business-critical applications and databases.
 
 ## Lab Architecture ##
 
 The following diagram provides an overview of the Lab environment that will be built.
+
+**This architecture is designed for a classroom environment of up to 20 teams within a single subscription.**
 
 ![SQL Hack Architecture](https://github.com/markjones-msft/SQL-Hackathon/raw/master/Hands-On%20Lab/SQLHack%20Architecture.png "SQL Hack Architecture")
 
