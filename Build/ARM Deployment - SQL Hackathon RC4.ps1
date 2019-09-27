@@ -1,6 +1,7 @@
 ﻿
 #Login-AzAccount
-#Select-AzSubscription
+#Get-AzSubscription
+#Select-AzSubscription <subscription ID here>
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "#################################################################################"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "SQL Server Migration Hack Build Script"
