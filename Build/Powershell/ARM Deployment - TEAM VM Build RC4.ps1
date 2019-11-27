@@ -8,6 +8,7 @@ $LabsPath = 'C:\_SQLHACK_\LABS'
 $Labs1Path = 'C:\_SQLHACK_\LABS\01-Data_Migration'
 $Labs2Path = 'C:\_SQLHACK_\LABS\02-SSIS_Migration'
 $Labs3Path = 'C:\_SQLHACK_\LABS\03-Security'
+$Labs3SecurityPath = 'C:\_SQLHACK_\LABS\03-Security\SQLScripts'
 
 ##################################################################
 #Create Folders for Labs and Installs
@@ -17,6 +18,7 @@ md -Path $InstallPath
 md -Path $Labs1Path
 md -Path $Labs2Path
 md -Path $Labs3Path
+md -Path $Labs3SecurityPath
 
 $SASURIKey = $SASURIKey | ConvertFrom-Json
 
@@ -49,6 +51,9 @@ Unzip "$InstallPath\Lab2.zip" "$Labs2Path"
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/raw/master/Hands-On%20Lab/03%20Security/Hands-on-Lab%20-%20Data%20Security.pdf' -OutFile "$Labs3Path\Hands-on Lab - Security.pdf"
 $StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
 
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/03%20Security/SQLScripts/2.%20Auditing.sql' -OutFile "$Labs3SecurityPath\2.Auditing.sql"
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/03%20Security/SQLScripts/2.%20Auditing.sql' -OutFile "$Labs3SecurityPath\3. Dynamic Data Masking.sql"
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/03%20Security/SQLScripts/2.%20Auditing.sql' -OutFile "$Labs3SecurityPath\4. TDE and Password Reset.sql"
 
 #########################################################################
 #Install Applications
