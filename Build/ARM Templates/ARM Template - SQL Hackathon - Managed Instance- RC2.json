@@ -93,6 +93,7 @@
         "location": "[resourceGroup().location]",
         "virtualNetworkResourceGroupName": "[resourceGroup().name]",
         "uniqueManagedInstanceName": "[concat(parameters('managedInstanceName'), '-', uniqueString(resourceGroup().id))]",
+        "managementSubnetName": "Management",
         "skuName": "GP_Gen5",
         "skuEdition": "GeneralPurpose",
         "licenseType": "BasePrice",
