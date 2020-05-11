@@ -3013,7 +3013,7 @@
                             "properties": {
                                 "addressPrefix": "[reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2018-04-01').addressPrefix]",
                                 "routeTable": {
-                                    "id": "[if(variables('createRT'), resourceId('Microsoft.Network/routeTables', variables('routeTableName')), reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2018-04-01').routeTable.id)]"
+                                    "id": "[if(parameters('createRT'), resourceId('Microsoft.Network/routeTables', variables('routeTableName')), reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2018-04-01').routeTable.id)]"
                                 },
                                 "networkSecurityGroup": {
                                     "id": "[if(parameters('createNSG'), resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName')), if(parameters('removedNSG'), resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupAllowAllName')), reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2018-04-01').networkSecurityGroup.id))]"
