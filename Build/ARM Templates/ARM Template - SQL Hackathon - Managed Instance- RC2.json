@@ -99,7 +99,7 @@
         "hardwareFamily": "Gen5",
         "timezoneId": "UTC",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
-        "MIsubnetName": "ManagedInstance",
+        "subnetName": "ManagedInstance",
         "dataFactoryName": "[concat('sqlhack-datafactory-', uniqueString(resourceGroup().id))]",
         "nodeSize": "Standard_A4_v2",
         "routeTableName": "[concat('rt-', parameters('managedInstanceName'))]",
@@ -3046,7 +3046,7 @@
             "properties": {
                 "administratorLogin": "[parameters('adminUsername')]",
                 "administratorLoginPassword": "[parameters('adminPassword')]",
-                "subnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('MIsubnetName'))]",
+                "subnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
                 "storageSizeInGB": "[parameters('storageSizeInGB')]",
                 "vCores": "[parameters('vCores')]",
                 "licenseType": "[variables('licenseType')]",
