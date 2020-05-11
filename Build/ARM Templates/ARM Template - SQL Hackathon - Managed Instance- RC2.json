@@ -2991,7 +2991,7 @@
             "apiVersion": "2017-05-10",
             "name": "updateSubnetTemplate",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('networkSecurityGroupName')]",
+            "resourceGroup": "[resourceGroup().name]",
             "dependsOn": [
                 "[variables('routeTableName')]",
                 "[variables('networkSecurityGroupName')]",
