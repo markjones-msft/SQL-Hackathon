@@ -91,6 +91,7 @@
     },
     "variables": {
         "location": "[resourceGroup().location]",
+        "virtualNetworkResourceGroupName": "[resourceGroup().name]",
         "uniqueManagedInstanceName": "[concat(parameters('managedInstanceName'), '-', uniqueString(resourceGroup().id))]",
         "skuName": "GP_Gen5",
         "skuEdition": "GeneralPurpose",
@@ -2992,7 +2993,7 @@
             "apiVersion": "2017-05-10",
             "name": "updateSubnetTemplate",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[resourceGroup().name]",
+            "resourceGroup": "[variables('virtualNetworkResourceGroupName')]",
             "dependsOn": [
                 "[variables('routeTableName')]",
                 "[variables('networkSecurityGroupName')]",
