@@ -2924,8 +2924,8 @@
                                 "protocol": "[variables('unionNSGs')[copyIndex('securityRules')].properties.protocol]",
                                 "sourcePortRange": "[variables('unionNSGs')[copyIndex('securityRules')].properties.sourcePortRange]",
                                 "[if(contains(variables('unionNSGs')[copyIndex('securityRules')].properties, 'destinationPortRange'), 'destinationPortRange', 'destinationPortRanges')]": "[if(contains(variables('unionNSGs')[copyIndex('securityRules')].properties, 'destinationPortRange'), variables('unionNSGs')[copyIndex('securityRules')].properties.destinationPortRange, variables('unionNSGs')[copyIndex('securityRules')].properties.destinationPortRanges)]",
-                                "sourceAddressPrefix": "[replace(variables('unionNSGs')[copyIndex('securityRules')].properties.sourceAddressPrefix, '<subnet_range>', reference(resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2017-10-01').addressPrefix)]",
-                                "destinationAddressPrefix": "[replace(variables('unionNSGs')[copyIndex('securityRules')].properties.destinationAddressPrefix, '<subnet_range>', reference(resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2017-10-01').addressPrefix)]",
+                                "sourceAddressPrefix": "[replace(variables('unionNSGs')[copyIndex('securityRules')].properties.sourceAddressPrefix, '<subnet_range>', reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2017-10-01').addressPrefix)]",
+                                "destinationAddressPrefix": "[replace(variables('unionNSGs')[copyIndex('securityRules')].properties.destinationAddressPrefix, '<subnet_range>', reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2017-10-01').addressPrefix)]",
                                 "access": "[variables('unionNSGs')[copyIndex('securityRules')].properties.access]",
                                 "priority": "[variables('unionNSGs')[copyIndex('securityRules')].properties.priority]",
                                 "direction": "[variables('unionNSGs')[copyIndex('securityRules')].properties.direction]"
@@ -2953,8 +2953,8 @@
                                 "protocol": "[variables('allowAllNSGs')[copyIndex('securityRules')].properties.protocol]",
                                 "sourcePortRange": "[variables('allowAllNSGs')[copyIndex('securityRules')].properties.sourcePortRange]",
                                 "[if(contains(variables('allowAllNSGs')[copyIndex('securityRules')].properties, 'destinationPortRange'), 'destinationPortRange', 'destinationPortRanges')]": "[if(contains(variables('allowAllNSGs')[copyIndex('securityRules')].properties, 'destinationPortRange'), variables('allowAllNSGs')[copyIndex('securityRules')].properties.destinationPortRange, variables('allowAllNSGs')[copyIndex('securityRules')].properties.destinationPortRanges)]",
-                                "sourceAddressPrefix": "[replace(variables('allowAllNSGs')[copyIndex('securityRules')].properties.sourceAddressPrefix, '<subnet_range>', reference(resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2017-10-01').addressPrefix)]",
-                                "destinationAddressPrefix": "[replace(variables('allowAllNSGs')[copyIndex('securityRules')].properties.destinationAddressPrefix, '<subnet_range>', reference(resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2017-10-01').addressPrefix)]",
+                                "sourceAddressPrefix": "[replace(variables('allowAllNSGs')[copyIndex('securityRules')].properties.sourceAddressPrefix, '<subnet_range>', reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2017-10-01').addressPrefix)]",
+                                "destinationAddressPrefix": "[replace(variables('allowAllNSGs')[copyIndex('securityRules')].properties.destinationAddressPrefix, '<subnet_range>', reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2017-10-01').addressPrefix)]",
                                 "access": "[variables('allowAllNSGs')[copyIndex('securityRules')].properties.access]",
                                 "priority": "[variables('allowAllNSGs')[copyIndex('securityRules')].properties.priority]",
                                 "direction": "[variables('allowAllNSGs')[copyIndex('securityRules')].properties.direction]"
@@ -2979,7 +2979,7 @@
                         "input": {
                             "name": "[concat('SqlManagement_', copyIndex('routes'))]",
                             "properties": {
-                                "addressPrefix": "[replace(variables('routesUnion')[copyIndex('routes')].properties.addressPrefix, '<subnet_range>', reference(resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2017-10-01').addressPrefix)]",
+                                "addressPrefix": "[replace(variables('routesUnion')[copyIndex('routes')].properties.addressPrefix, '<subnet_range>', reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2017-10-01').addressPrefix)]",
                                 "nextHopType": "[variables('routesUnion')[copyIndex('routes')].properties.nextHopType]"
                             }
                         }
@@ -3005,15 +3005,15 @@
                     "resources": [
                         {
                             "type": "Microsoft.Network/virtualNetworks/subnets",
-                            "name": "[concat(parameters('virtualNetworkName'), '/', parameters('subnetName'))]",
+                            "name": "[concat(variables('virtualNetworkName'), '/', variables('subnetName'))]",
                             "apiVersion": "2018-04-01",
                             "properties": {
-                                "addressPrefix": "[reference(resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2018-04-01').addressPrefix]",
+                                "addressPrefix": "[reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2018-04-01').addressPrefix]",
                                 "routeTable": {
-                                    "id": "[if(parameters('createRT'), resourceId('Microsoft.Network/routeTables', variables('routeTableName')), reference(resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2018-04-01').routeTable.id)]"
+                                    "id": "[if(variables('createRT'), resourceId('Microsoft.Network/routeTables', variables('routeTableName')), reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2018-04-01').routeTable.id)]"
                                 },
                                 "networkSecurityGroup": {
-                                    "id": "[if(parameters('createNSG'), resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName')), if(parameters('removedNSG'), resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupAllowAllName')), reference(resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2018-04-01').networkSecurityGroup.id))]"
+                                    "id": "[if(parameters('createNSG'), resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName')), if(parameters('removedNSG'), resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupAllowAllName')), reference(resourceId(variables('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')), '2018-04-01').networkSecurityGroup.id))]"
                                 },
                                 "delegations": [
                                     {
