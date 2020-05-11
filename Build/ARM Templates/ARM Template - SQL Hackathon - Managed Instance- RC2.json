@@ -56,6 +56,33 @@
             "metadata": {
                 "description": "Select the storage size for the Managed Instance."
             }
+        },
+        "proxyOverride": {
+            "type": "string",
+            "defaultValue": "Proxy"
+        },
+        "publicDataEndpointEnabled": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "nsgForPublicEndpoint": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "dnsZonePartner": {
+            "type": "string",
+            "defaultValue": "allowFromAzureCloudTo3342NSG"
+        },        "createNSG": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "removedNSG": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "createRT": {
+            "type": "bool",
+            "defaultValue": false
         }
     },
     "variables": {
@@ -65,7 +92,6 @@
         "skuEdition": "GeneralPurpose",
         "licenseType": "BasePrice",
         "hardwareFamily": "Gen5",
-        "publicDataEndpointEnabled": false,
         "timezoneId": "UTC",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
         "MIsubnetName": "ManagedInstance",
@@ -3022,8 +3048,8 @@
                 "hardwareFamily": "[variables('hardwareFamily')]",
                 "dnsZonePartner": "",
                 "collation": "SQL_Latin1_General_CP1_CI_AS",
-                "proxyOverride": "",
-                "publicDataEndpointEnabled": "[variables('publicDataEndpointEnabled')]",
+                "proxyOverride": "[parameters('proxyOverride')]",
+                "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
                 "timezoneId": "[variables('timezoneId')]"
             },
             "dependsOn": [
