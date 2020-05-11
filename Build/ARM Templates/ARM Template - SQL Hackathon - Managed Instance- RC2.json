@@ -57,7 +57,6 @@
                 "description": "Select the storage size for the Managed Instance."
             }
         }
-        
     },
     "variables": {
         "location": "[resourceGroup().location]",
@@ -2682,7 +2681,7 @@
                 }
             ]
         },
-        "routesUnion": "[if(contains(variables('locations'), tolower(parameters('location'))), union(variables('routesJumpboxes'), variables('routesSAW'), variables('routesRunners'), variables('routesDSMS'), variables(parameters('location')).controlPlane, variables(parameters('location')).controlPlane_SqlManagementTag, variables(parameters('location')).runners, variables(parameters('location')).DSMS), union(variables('routesJumpboxes'), variables('routesSAW'), variables('routesRunners')))]",
+        "routesUnion": "[if(contains(variables('locations'), tolower(variables('location'))), union(variables('routesJumpboxes'), variables('routesSAW'), variables('routesRunners'), variables('routesDSMS'), variables(varables('location')).controlPlane, variables(varables('location')).controlPlane_SqlManagementTag, variables(varables('location')).runners, variables(varables('location')).DSMS), union(variables('routesJumpboxes'), variables('routesSAW'), variables('routesRunners')))]",
         "defaultNSGs": [
             {
                 "name": "allow_tds_inbound",
@@ -2883,7 +2882,7 @@
             "name": "[variables('networkSecurityGroupName')]",
             "condition": "[parameters('createNSG')]",
             "apiVersion": "2017-10-01",
-            "location": "[parameters('location')]",
+            "location": "[varables('location')]",
             "properties": {
                 "copy": [
                     {
@@ -2912,7 +2911,7 @@
             "name": "[variables('networkSecurityGroupAllowAllName')]",
             "condition": "[and(not(parameters('createNSG')), parameters('removedNSG'))]",
             "apiVersion": "2017-10-01",
-            "location": "[parameters('location')]",
+            "location": "[varables('location')]",
             "properties": {
                 "copy": [
                     {
@@ -2941,7 +2940,7 @@
             "name": "[variables('routeTableName')]",
             "condition": "[parameters('createRT')]",
             "apiVersion": "2018-02-01",
-            "location": "[parameters('location')]",
+            "location": "[varables('location')]",
             "properties": {
                 "disableBgpRoutePropagation": false,
                 "copy": [
