@@ -23,6 +23,9 @@
                 "description": "The password must be between 16 and 128 characters in length and must contain at least one number, one non-alphanumeric character, and one upper or lower case letter. Default value is Password.1234567890"
             }
         },
+        "location": {
+            "type": "string"
+        },
         "vCores": {
             "type": "int",
             "defaultValue": 4,
@@ -2707,7 +2710,7 @@
                 }
             ]
         },
-        "routesUnion": "[if(contains(variables('locations'), tolower(variables('location'))), union(variables('routesJumpboxes'), variables('routesSAW'), variables('routesRunners'), variables('routesDSMS'), variables(varables('location')).controlPlane, variables(varables('location')).controlPlane_SqlManagementTag, variables(varables('location')).runners, variables(varables('location')).DSMS), union(variables('routesJumpboxes'), variables('routesSAW'), variables('routesRunners')))]",
+        "routesUnion": "[if(contains(variables('locations'), tolower(parameters('location'))), union(variables('routesJumpboxes'), variables('routesSAW'), variables('routesRunners'), variables('routesDSMS'), variables(parameters('location')).controlPlane, variables(parameters('location')).controlPlane_SqlManagementTag, variables(parameters('location')).runners, variables(parameters('location')).DSMS), union(variables('routesJumpboxes'), variables('routesSAW'), variables('routesRunners')))]",
         "defaultNSGs": [
             {
                 "name": "allow_tds_inbound",
