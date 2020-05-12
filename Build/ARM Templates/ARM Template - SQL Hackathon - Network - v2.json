@@ -19,7 +19,6 @@
     },
 
     "variables": {
-
         "location": "[resourceGroup().location]",
         "routeTableName": "[concat(resourceGroup().name, '-route-table')]",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
@@ -32,9 +31,7 @@
         "ManagementSubnetName": "Management",
         "ManagementSubnetPrefix": "10.0.2.0/24",
         "TeamVMSubnetName": "TeamJumpServers",
-        "TeamVMSubnetPrefix": "10.0.3.0/24",
-        "networkSecurityGroupName": "[concat('nsg-', parameters('managedInstanceName'))]"
-
+        "TeamVMSubnetPrefix": "10.0.3.0/24"
     },
 
     "resources": [
@@ -73,82 +70,44 @@
         {
 
             "name": "[variables('virtualNetworkName')]",
-
             "type": "Microsoft.Network/virtualNetworks",
-
             "apiVersion": "2019-04-01",
-
             "location": "[variables('location')]",
-
             "dependsOn": [],
-
             "properties": {
-
                 "addressSpace": {
-
                     "addressPrefixes": [
-
                         "[variables('addressPrefix')]"
-
                     ]
-
                 },
-
                 "subnets": [
 
                     {
-
                         "name": "[variables('gatewaySubnetName')]",
-
                         "properties": {
-
                             "addressPrefix": "[variables('gatewaySubnetPrefix')]"
-
                         }
-
                     },
-
                     {
-
                         "name": "[variables('MIsubnetName')]",
-
                         "properties": {
-
                             "addressPrefix": "[variables('MIsubnetPrefix')]"
                         }
-
                     },
-
                     {
-
                         "name": "[variables('managementSubnetName')]",
-
                         "properties": {
-
                             "addressPrefix": "[variables('managementSubnetPrefix')]"
-
                         }
-
                     },
-
                     {
-
                         "name": "[variables('TeamVMSubnetName')]",
-
                         "properties": {
-
                             "addressPrefix": "[variables('TeamVMSubnetPrefix')]"
-
                         }
-
                     }
-
                 ]
-
             }
-
         }
-
     ]
-
 }
