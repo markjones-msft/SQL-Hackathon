@@ -4,9 +4,6 @@
 
     "contentVersion": "1.0.0.0",
 
-    "parameters": {
-    },
-
     "variables": {
         "location": "[resourceGroup().location]",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
