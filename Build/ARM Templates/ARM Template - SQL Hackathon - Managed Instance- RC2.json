@@ -100,6 +100,7 @@
         "hardwareFamily": "Gen5",
         "timezoneId": "UTC",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
+        "virtualNetworkId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
         "subnetName": "ManagedInstance",
         "dataFactoryName": "[concat('sqlhack-datafactory-', uniqueString(resourceGroup().id))]",
         "nodeSize": "Standard_A4_v2",
@@ -3088,7 +3089,7 @@
                       "numberOfNodes": 1,
                       "maxParallelExecutionsPerNode": 8,
                       "vNetProperties": {
-                        "vNetId": "[variables('virtualNetworId')]",
+                        "vNetId": "[variables('virtualNetworkId')]",
                         "subnet": "[variables('managementSubnetName')]"
                       }
                     },

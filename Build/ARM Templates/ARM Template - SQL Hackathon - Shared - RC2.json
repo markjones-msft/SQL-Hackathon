@@ -26,7 +26,7 @@
         "vgGatewayType": "Vpn",
         "vgVpnType": "RouteBased",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
-        "virtualNetworId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+        "virtualNetworkId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
         "gatewaySubnetName": "GatewaySubnet",
         "managementSubnetName": "Management",
         "dmsName": "sqlhack-migrationservice"
