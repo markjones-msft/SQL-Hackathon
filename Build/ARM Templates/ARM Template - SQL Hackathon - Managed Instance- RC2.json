@@ -87,7 +87,12 @@
         "createRT": {
             "type": "bool",
             "defaultValue": false
+        },
+        "createMI":{
+            "type": "bool",
+            "defaultValue": true
         }
+
     },
     "variables": {
         "location": "[resourceGroup().location]",
@@ -3035,6 +3040,7 @@
         },
         {
             "type": "Microsoft.Sql/managedInstances",
+            "condition": "[parameters('createMI')]",
             "sku": {
                 "name": "[variables('skuName')]",
                 "tier": "[variables('skuEdition')]"
