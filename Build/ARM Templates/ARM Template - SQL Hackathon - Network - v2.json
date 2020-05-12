@@ -1,0 +1,167 @@
+{
+
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+
+    "contentVersion": "1.0.0.0",
+
+    "parameters": {
+
+        "managedInstanceName": {
+
+            "defaultValue": "sqlhackmi",
+
+            "type": "string",
+
+            "maxLength": 13
+
+        }
+
+    },
+
+    "variables": {
+
+        "location": "[resourceGroup().location]",
+        "routeTableName": "[concat(resourceGroup().name, '-route-table')]",
+        "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
+        "storageAccountName": "[concat('sqlhacksa', uniqueString(resourceGroup().id))]",
+        "addressPrefix": "10.0.0.0/16",
+        "MIsubnetName": "ManagedInstance",
+        "MIsubnetPrefix": "10.0.1.0/24",
+        "GatewaySubnetName": "GatewaySubnet",
+        "GatewaySubnetPrefix": "10.0.0.0/24",
+        "ManagementSubnetName": "Management",
+        "ManagementSubnetPrefix": "10.0.2.0/24",
+        "TeamVMSubnetName": "TeamJumpServers",
+        "TeamVMSubnetPrefix": "10.0.3.0/24",
+        "networkSecurityGroupName": "[concat('nsg-', parameters('managedInstanceName'))]"
+
+    },
+
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-04-01",
+            "name": "[variables('storageAccountName')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+
+            "name": "[variables('virtualNetworkName')]",
+
+            "type": "Microsoft.Network/virtualNetworks",
+
+            "apiVersion": "2019-04-01",
+
+            "location": "[variables('location')]",
+
+            "dependsOn": [],
+
+            "properties": {
+
+                "addressSpace": {
+
+                    "addressPrefixes": [
+
+                        "[variables('addressPrefix')]"
+
+                    ]
+
+                },
+
+                "subnets": [
+
+                    {
+
+                        "name": "[variables('gatewaySubnetName')]",
+
+                        "properties": {
+
+                            "addressPrefix": "[variables('gatewaySubnetPrefix')]"
+
+                        }
+
+                    },
+
+                    {
+
+                        "name": "[variables('MIsubnetName')]",
+
+                        "properties": {
+
+                            "addressPrefix": "[variables('MIsubnetPrefix')]",
+
+                            "routeTable": {
+
+                                "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+
+                            },
+
+                            "networkSecurityGroup": {
+
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+
+                            }
+
+                        }
+
+                    },
+
+                    {
+
+                        "name": "[variables('managementSubnetName')]",
+
+                        "properties": {
+
+                            "addressPrefix": "[variables('managementSubnetPrefix')]"
+
+                        }
+
+                    },
+
+                    {
+
+                        "name": "[variables('TeamVMSubnetName')]",
+
+                        "properties": {
+
+                            "addressPrefix": "[variables('TeamVMSubnetPrefix')]"
+
+                        }
+
+                    }
+
+                ]
+
+            }
+
+        }
+
+    ]
+
+}
