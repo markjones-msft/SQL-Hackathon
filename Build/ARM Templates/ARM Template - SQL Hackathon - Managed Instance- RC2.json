@@ -3077,13 +3077,13 @@
             "properties": {},
             "resources": [
               {
-                "name": "[concat(variables('dataFactoryName'), '/SPAzureSsisIR')]",
-                "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+                "name": "SSISIR",
+                "type": "integrationruntimes",
                 "dependsOn": [
                   "[variables('dataFactoryName')]",
                   "[variables('uniqueManagedInstanceName')]"
                 ],
-                "apiVersion": "2017-09-01-preview",
+                "apiVersion": "2018-06-01",
                 "properties": {
                   "type": "Managed",
                   "LicenseType": "BasePrice",
@@ -3093,7 +3093,7 @@
                       "nodeSize": "[variables('nodeSize')]",
                       
                       "numberOfNodes": 1,
-                      "maxParallelExecutionsPerNode": 8,
+                      "maxParallelExecutionsPerNode": 4,
                       "vNetProperties": {
                         "vNetId": "[variables('virtualNetworkId')]",
                         "subnet": "[variables('managementSubnetName')]"
@@ -3107,17 +3107,15 @@
                           "type": "SecureString",
                           "value": "[parameters('adminPassword')]"
                         },
-                        "catalogPricingTier": ""
+                        "catalogPricingTier": null
                       }
-                    }
+                    },
+                    "edition": "Standard",
+                    "licenseType": "BasePrice"
                   }
                 }
               }
             ]
         }   
-
-
-
-
     ]
 }
