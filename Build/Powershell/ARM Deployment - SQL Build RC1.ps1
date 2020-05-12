@@ -1,26 +1,22 @@
-﻿
+﻿#param (
+#    [securestring]$AdminPassword
+#)
+
+
 # Disable Internet Explorer Enhanced Security Configuration
 
 function Disable-InternetExplorerESC {
-
     $AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
-
     $UserKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}"
-
     Set-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0 -Force
-
     Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0 -Force
-
     Stop-Process -Name Explorer -Force
-
     Write-Host "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
 
 }
 
 # Disable IE ESC
-
 Disable-InternetExplorerESC
-
 
 # Enable SQL Server ports on the Windows firewall
 
@@ -92,19 +88,15 @@ Start-service -Name 'MSSQLSERVER' -Verbose
 Start-Sleep -s 90
 
 #Run SQL Cmds
-#Start-process -File 'C:\SQLServerFull\x86\Setup\sql_engine_core_shared_msi\PFiles\SqlServr\100\Tools\Binn\sqlcmd.exe' -arg '-S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "C:\Backups\1- CREATE Logins.sql"' -Wait
-#Start-process -File 'C:\SQLServerFull\x86\Setup\sql_engine_core_shared_msi\PFiles\SqlServr\100\Tools\Binn\sqlcmd.exe' -arg '-S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "C:\Backups\2- RESTORE Databases.sql"' -Wait
-#Start-process -File 'C:\SQLServerFull\x86\Setup\sql_engine_core_shared_msi\PFiles\SqlServr\100\Tools\Binn\sqlcmd.exe' -arg '-S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "C:\Backups\3- RESTORE FIXES.sql"' -Wait 
-
-#C:\SQLServerFull\x86\Setup\sql_engine_core_shared_msi\PFiles\SqlServr\100\Tools\Binn\
-sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\1- CREATE Logins.sql"
-sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\2- RESTORE Databases.sql"
-sqlcmd -S "(local)" -U "DemoUser" -P "Demo@pass1234567" -i "$BackupPath\3- RESTORE FIXES.sql"
+#sqlcmd -S "(local)" -U "DemoUser" -P $AdminPassword -i "$BackupPath\1- CREATE Logins.sql"
+sqlcmd -S "(local)" -E -i "$BackupPath\1- CREATE Logins.sql"
+sqlcmd -S "(local)" -E -i "$BackupPath\2- RESTORE Databases.sql"
+sqlcmd -S "(local)" -E -i "$BackupPath\3- RESTORE FIXES.sql"
 
 md -Path "C:\FILESHARE"
 
 # Create a file share for DMS
 New-SMBShare –Name “FILESHARE” –Path $Fileshare `
  –ContinuouslyAvailable `
- –FullAccess .\Administrators
+ –FullAccess .\Everyone
 
