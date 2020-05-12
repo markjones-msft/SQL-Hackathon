@@ -39,12 +39,12 @@ $DefaultValue = "NorthEurope"
 if (($Location = Read-Host "Please enter the Location of the Resource Groups. (default value: $DefaultValue)") -eq '') {$Location = $DefaultValue}
 If (“NorthEurope”,”WestEurope”,”UKSouth”, "UKWest", "WestUS", "EastUS" -NotContains $Location  ) {Write-Warning "Unrecognised location. Setting to Default $DefaultValue" ; $Location = "NorthEurope"}
 
-$DefaultValue = "SQLHACK-SHARED"
-if (($SharedRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$SharedRG = $DefaultValue}
-
 ###################################################################
 # Setup Hack Resource Groups
 ###################################################################
+$DefaultValue = "SQLHACK-SHARED"
+if (($SharedRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$SharedRG = $DefaultValue}
+
 $notPresent = Get-AzResourceGroup -name $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if (!($notPresent)) {New-AzResourceGroup -Name $SharedRG -Location $Location} 
 
@@ -60,7 +60,7 @@ do
     ; $x = $x - 1; write-host "Number retries remaining: " $x;
     if ($x -le 0) {write-host "Existing build. Please check password and retry..."; Exit};
     }
-while ($Password.length -le 16)
+while ($Password.length -le 15)
 $adminPassword = convertto-securestring (convertfrom-securestring $Password)
 
 ###################################################################
@@ -69,9 +69,6 @@ $adminPassword = convertto-securestring (convertfrom-securestring $Password)
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating Virtual Network................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Network%20-%20v2.json"
 New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "NetworkBuild" 
-
-test-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri
-
 
 # Check if Vnet has been created
 Get-AzVirtualNetwork -Name "$SharedRG-vnet" -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
@@ -86,10 +83,10 @@ $StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name
 $Key0 = $StorageAccountKeys | Select-Object -First 1 -ExpandProperty Value
 $Context = New-AzStorageContext -StorageAccountName $StorageAccount -StorageAccountKey $Key0
 
-New-AzStorageContainer -Context $Context -Name migration1
-New-AzStorageContainer -Context $Context -Name auditlogs1
+New-AzStorageContainer -Context $Context -Name migration 
+New-AzStorageContainer -Context $Context -Name auditlogs
 
-$storagePolicyName = “Migration-Policy1”
+$storagePolicyName = “Migration-Policy”
 $expiryTime = (Get-Date).AddYears(1)
 New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission rwl -ExpiryTime $expiryTime -Context $Context -StartTime(Get-Date) 
 $SASUri = (New-AzStorageContainerSASToken -Name "migration" -FullUri -Policy $storagePolicyName -Context $Context)
