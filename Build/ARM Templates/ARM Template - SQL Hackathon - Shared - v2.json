@@ -1,0 +1,94 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.1",
+    "parameters": {
+        "managedInstanceName": {
+            "defaultValue": "sqlhackmi",
+            "type": "string",
+            "maxLength": 13,
+            "metadata": {
+                "description": "Enter name to assign to the Azure SQL Database Managed Instance. The name can contain only lowercase letters, numbers, and '-', but can't start or end with '-' or have more than 63 characters."
+            }
+        },
+        "adminUsername": {
+            "defaultValue": "DemoUser",
+            "type": "string",
+            "metadata": {
+                "description": "Administrator user name for logging into the virtual machine and SQL MI."
+            }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "uniqueManagedInstanceName": "[concat(parameters('managedInstanceName'))]",
+        "virtualNetworkGatewayName": "[concat(resourceGroup().name, '-vnet-gateway')]",
+        "vgPublicIpAddressName": "vnet-gateway-ip",
+        "vgGatewayType": "Vpn",
+        "vgVpnType": "RouteBased",
+        "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
+        "virtualNetworkId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+        "gatewaySubnetName": "GatewaySubnet",
+        "managementSubnetName": "Management",
+        "dmsName": "sqlhack-migrationservice"
+    },
+    "resources": [
+        {
+            "apiVersion": "2019-04-01",
+            "name": "[variables('virtualNetworkGatewayName')]",
+            "type": "Microsoft.Network/virtualNetworkGateways",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('vgPublicIpAddressName'))]"
+            ],
+            "tags": {},
+            "properties": {
+                "gatewayType": "[variables('vgGatewayType')]",
+                "ipConfigurations": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('gatewaySubnetName'))]"
+                            },
+                            "publicIpAddress": {
+                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIPAddresses', variables('vgPublicIpAddressName'))]"
+                            }
+                        }
+                    }
+                ],
+                "vpnType": "[variables('vgVpnType')]",
+                "sku": {
+                    "name": "VpnGw1",
+                    "tier": "VpnGw1",
+                    "capacity": 2
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DataMigration/services",
+            "apiVersion": "2018-04-19",
+            "name": "[variables('dmsName')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+            ],
+            "sku": {
+                "name": "Premium_4vCores",
+                "tier": "Premium",
+                "size": "4 vCores"
+            },
+            "properties": {
+                "virtualSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('managementSubnetName'))]"
+            }
+        },
+        {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('vgPublicIpAddressName')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
+        }  
+    ]
+}
