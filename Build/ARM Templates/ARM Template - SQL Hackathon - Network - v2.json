@@ -5,22 +5,10 @@
     "contentVersion": "1.0.0.0",
 
     "parameters": {
-
-        "managedInstanceName": {
-
-            "defaultValue": "sqlhackmi",
-
-            "type": "string",
-
-            "maxLength": 13
-
-        }
-
     },
 
     "variables": {
         "location": "[resourceGroup().location]",
-        "routeTableName": "[concat(resourceGroup().name, '-route-table')]",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
         "storageAccountName": "[concat('sqlhacksa', uniqueString(resourceGroup().id))]",
         "addressPrefix": "10.0.0.0/16",
