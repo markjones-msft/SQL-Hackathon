@@ -18,7 +18,6 @@
         "TeamVMSubnetName": "TeamJumpServers",
         "TeamVMSubnetPrefix": "10.0.3.0/24"
     },
-
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
