@@ -3071,7 +3071,7 @@
         } ,
         {
             "name": "[variables('dataFactoryName')]",
-            "apiVersion": "2017-09-01-preview",
+            "apiVersion": "2018-06-01",
             "type": "Microsoft.DataFactory/factories",
             "location": "[variables('location')]",
             "properties": {},
