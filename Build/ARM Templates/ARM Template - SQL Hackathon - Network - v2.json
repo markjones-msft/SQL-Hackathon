@@ -114,20 +114,7 @@
 
                         "properties": {
 
-                            "addressPrefix": "[variables('MIsubnetPrefix')]",
-
-                            "routeTable": {
-
-                                "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
-
-                            },
-
-                            "networkSecurityGroup": {
-
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-
-                            }
-
+                            "addressPrefix": "[variables('MIsubnetPrefix')]"
                         }
 
                     },

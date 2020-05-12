@@ -20,7 +20,7 @@ else {   `
     $subscriptionMessage = ("Actually targeting Azure subscription: {0} - {1}." -f $subscriptionID, $subscriptionName)}
 Write-Host -BackgroundColor Black -ForegroundColor Yellow $subscriptionMessage
 
-if (($response = read-host "Please ensure this is the correct subscription. Press a to abort, any other key to continue.") -eq "a") {Return;}
+if ((read-host "Please ensure this is the correct subscription. Press a to abort, any other key to continue.") -eq "a") {Return;}
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Continuing to build.................................................."
 
 ###################################################################
@@ -69,6 +69,9 @@ $adminPassword = convertto-securestring (convertfrom-securestring $Password)
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating Virtual Network................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Network%20-%20v2.json"
 New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -Name "NetworkBuild" 
+
+test-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri
+
 
 # Check if Vnet has been created
 Get-AzVirtualNetwork -Name "$SharedRG-vnet" -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
