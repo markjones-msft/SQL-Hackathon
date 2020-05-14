@@ -88,7 +88,6 @@ Start-service -Name 'MSSQLSERVER' -Verbose
 Start-Sleep -s 90
 
 #Run SQL Cmds
-#sqlcmd -S "(local)" -U "DemoUser" -P $AdminPassword -i "$BackupPath\1- CREATE Logins.sql"
 sqlcmd -S "(local)" -E -i "$BackupPath\1- CREATE Logins.sql"
 sqlcmd -S "(local)" -E -i "$BackupPath\2- RESTORE Databases.sql"
 sqlcmd -S "(local)" -E -i "$BackupPath\3- RESTORE FIXES.sql"
@@ -96,7 +95,8 @@ sqlcmd -S "(local)" -E -i "$BackupPath\3- RESTORE FIXES.sql"
 md -Path "C:\FILESHARE"
 
 # Create a file share for DMS
-New-SMBShare –Name “FILESHARE” –Path $Fileshare `
- –ContinuouslyAvailable `
- –FullAccess .\Everyone
+cmd.exe /c "NET SHARE FILESHARE=C:\FILESHARE /grant:Everyone,FULL"
+
+
+
 

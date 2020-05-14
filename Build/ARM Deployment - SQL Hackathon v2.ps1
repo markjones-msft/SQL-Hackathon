@@ -1,8 +1,9 @@
 ﻿
-#connect-AzAccount
+connect-AzAccount
+
+#If you need to change subscriptions please use the below commands.
 #Get-AzSubscription
 #Select-AzSubscription <subscription ID here>
-
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "#################################################################################"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "SQL Server Migration Hack Build Script"
@@ -39,9 +40,28 @@ $DefaultValue = "NorthEurope"
 if (($Location = Read-Host "Please enter the Location of the Resource Groups. (default value: $DefaultValue)") -eq '') {$Location = $DefaultValue}
 If (“NorthEurope”,”WestEurope”,”UKSouth”, "UKWest", "WestUS", "EastUS" -NotContains $Location  ) {Write-Warning "Unrecognised location. Setting to Default $DefaultValue" ; $Location = "NorthEurope"}
 
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: MAKE A NOTE OF THE FOLLOWING USERNAME and PASSWORD ########################"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "The username and password specified next, will be used to credentials to SQL, Managed Instance and any VM's"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################################"
+
+$adminUsername = Read-Host "Please enter an Admin username:"
+$x = 4
+do
+    {$Password = Read-Host "Please enter a 15 character Password." -AsSecureString
+    ; $x = $x - 1; if ($x -le 3){write-host "Number retries remaining: " $x};
+    if ($x -le 0) {write-host "Existing build. Please check password and retry..."; Exit};
+    }
+while ($Password.length -le 15)
+$adminPassword = convertto-securestring (convertfrom-securestring $Password)
+
 ###################################################################
 # Setup Hack Resource Groups
 ###################################################################
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: MAKE A NOTE OF THE FOLLOWING RESOURCE GROUPS ########################"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "The Resource groups will be used to store all the lab build"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################################"
+
 $DefaultValue = "SQLHACK-SHARED"
 if (($SharedRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$SharedRG = $DefaultValue}
 
@@ -54,14 +74,6 @@ if (($TeamRG = Read-Host "Please Shared resource group name. (default value: $De
 $notPresent =Get-AzResourceGroup -name $TeamRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if (!($notPresent)) {New-AzResourceGroup -Name $TeamRG -Location $Location}
 
-$x = 3
-do
-    {$Password = Read-Host "Please enter the 16 character Password. This will be used in all SQL and VM logins" -AsSecureString
-    ; $x = $x - 1; write-host "Number retries remaining: " $x;
-    if ($x -le 0) {write-host "Existing build. Please check password and retry..."; Exit};
-    }
-while ($Password.length -le 15)
-$adminPassword = convertto-securestring (convertfrom-securestring $Password)
 
 ###################################################################
 # Setup Network and Storage account
@@ -105,7 +117,7 @@ $JsonSASURI = $SASUri | ConvertTo-Json
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server................................................."
 
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20v2.json"
-New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminPassword $adminPassword -Name "LegacySQLBuild" -AsJob 
+New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminPassword $adminPassword -adminUsername $adminUsername -Name "LegacySQLBuild" -AsJob 
 
 ###################################################################
 # Setup Data Migration Service, Gateway, Keyvault
@@ -130,7 +142,7 @@ if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20v2.json"
 
-New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount -adminPassword $Password -AsJob 
+New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount -adminUsername $adminUsername -adminPassword $Password -AsJob 
 
 ###################################################################
 # Setup Managed Instance and ADF with SSIS IR
@@ -138,11 +150,11 @@ New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateU
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating sqlhack-mi Managed Instance................................................."
 
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Managed%20Instance-%20v2.json"
-New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminPassword $Password -location $location -createNSG 1 -createRT 1 -Name "ManagedInstanceBuild" -AsJob
+New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminUsername $adminUsername -adminPassword $Password -location $location -createNSG 1 -createRT 1 -Name "ManagedInstanceBuild" -AsJob
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Enviroment Build in progress. Please check RG deployments for errors."
 
 Write-Warning "NOTE: THE FOLLOWING  POST BUILD TASKS ARE REQUIRED."
 Write-Warning "1. DataFactory Build Ok. You will need to start the integration runtime and enable AHUB"
 Write-Warning "2. COPY the SASURI Key tas this will be needed for the Data Migration tasks"
-
+Write-Warning "3. All labs and documaention can be found on TEAMVM's in C:\_SQLHACK_\LABS"
