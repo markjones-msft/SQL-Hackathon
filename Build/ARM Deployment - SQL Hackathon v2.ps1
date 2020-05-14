@@ -47,14 +47,17 @@ Write-Host -BackgroundColor Black -ForegroundColor Yellow "#####################
 $adminUsername = Read-Host "Please enter an Admin username:"
 $x = 4
 do
-    {$Password = Read-Host "Please enter a 15 character Password." -AsSecureString
+    {$adminPassword = Read-Host "Please enter a 15 character Password." -AsSecureString 
     $x = $x - 1
     if ($x -lt 3){write-host "Number retries remaining: " $x};
     if ($x -le 0) {write-host "Existing build. Please check password and retry..."; Exit};
     }
-while ($Password.length -le 15)
-$adminPassword = convertto-securestring (convertfrom-securestring $Password)
+while ($adminPassword.length -le 15)
 
+write-host $adminpassword
+write-host $password
+#$adminPassword = convertto-securestring (convertfrom-securestring $Password)
+$Password = convertto-securestring ($adminPassword) -AsPlainText -Force
 ###################################################################
 # Setup Hack Resource Groups
 ###################################################################
@@ -118,7 +121,7 @@ $JsonSASURI = $SASUri | ConvertTo-Json
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server................................................."
 
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20v2.json"
-New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminPassword $adminPassword -adminUsername $adminUsername -Name "LegacySQLBuild" -AsJob 
+New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminUsername $adminUsername -adminPassword $Password -Name "LegacySQLBuild" -AsJob 
 
 ###################################################################
 # Setup Data Migration Service, Gateway, Keyvault
