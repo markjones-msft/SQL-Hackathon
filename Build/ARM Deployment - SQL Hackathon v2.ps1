@@ -44,17 +44,27 @@ Write-Host -BackgroundColor Black -ForegroundColor Yellow "#####################
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "The username and password specified next, will be used to credentials to SQL, Managed Instance and any VM's"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################################"
 
-$adminUsername = Read-Host "Please enter an Admin username:"
 $x = 4
 do
-    {$adminPassword = Read-Host "Please enter a 15 character Password." -AsSecureString 
-    $x = $x - 1
-    if ($x -lt 3){write-host "Number retries remaining: " $x};
-    if ($x -le 0) {write-host "Existing build. Please check password and retry..."; Exit};
+    {$x = $x - 1
+    if ($x -lt 3){write-host "Not enough characters. Retries remaining: " $x};
+    if ($x -le 0) {write-host "Existing build. Please check username and retry..."; Exit};
+    $adminUsername = Read-Host "Please enter an Admin username (more than 6 characters)"
     }
-while ($adminPassword.length -le 15)
+while ($adminUsername.length -le 6)
+
+
+$x = 4
+do
+    {$x = $x - 1
+    if ($x -lt 3){write-host "Not enough characters. Retries remaining: " $x};
+    if ($x -le 0) {write-host "Existing build. Please check password and retry..."; Exit};
+    $adminPassword = Read-Host "Please enter a 16 character Password. The password must be between 16 and 128 characters in length and must contain at least one number, one non-alphanumeric character, and one upper or lower case letter" -AsSecureString
+    }
+while ($adminPassword.length -le 16)
 
 write-host $adminpassword
+write-host $adminUsername
 write-host $password
 #$adminPassword = convertto-securestring (convertfrom-securestring $Password)
 $Password = convertto-securestring ($adminPassword) -AsPlainText -Force
@@ -121,7 +131,7 @@ $JsonSASURI = $SASUri | ConvertTo-Json
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating legacySQL2008 Server................................................."
 
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20LegacySQL-%20v2.json"
-New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminUsername $adminUsername -adminPassword $Password -Name "LegacySQLBuild" -AsJob 
+New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminPassword $adminpassword -adminUsername $adminUsername -Name "LegacySQLBuild" -AsJob 
 
 ###################################################################
 # Setup Data Migration Service, Gateway, Keyvault
@@ -146,7 +156,7 @@ if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20v2.json"
 
-New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount -adminUsername $adminUsername -adminPassword $adminPassword -AsJob 
+New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount -adminPassword $adminpassword -adminUsername $adminUsername -AsJob 
 
 ###################################################################
 # Setup Managed Instance and ADF with SSIS IR
@@ -154,7 +164,7 @@ New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateU
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating sqlhack-mi Managed Instance................................................."
 
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Managed%20Instance-%20v2.json"
-New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminUsername $adminUsername -adminPassword $adminPassword -location $location -createNSG 1 -createRT 1 -Name "ManagedInstanceBuild" -AsJob
+New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminPassword $adminpassword -adminUsername $adminUsername -location $location -createNSG 1 -createRT 1 -Name "ManagedInstanceBuild" -AsJob
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Enviroment Build in progress. Please check RG deployments for errors."
 
