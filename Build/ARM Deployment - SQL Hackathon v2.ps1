@@ -1,5 +1,5 @@
 ﻿
-connect-AzAccount
+#connect-AzAccount
 
 #If you need to change subscriptions please use the below commands.
 #Get-AzSubscription
@@ -48,7 +48,8 @@ $adminUsername = Read-Host "Please enter an Admin username:"
 $x = 4
 do
     {$Password = Read-Host "Please enter a 15 character Password." -AsSecureString
-    ; $x = $x - 1; if ($x -le 3){write-host "Number retries remaining: " $x};
+    $x = $x - 1
+    if ($x -lt 3){write-host "Number retries remaining: " $x};
     if ($x -le 0) {write-host "Existing build. Please check password and retry..."; Exit};
     }
 while ($Password.length -le 15)
@@ -142,7 +143,7 @@ if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating $TeamVMCount Team Server(s).................................................."
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Jump%20Servers%20-%20v2.json"
 
-New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount -adminUsername $adminUsername -adminPassword $Password -AsJob 
+New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateUri -Name "TeamVMBuild" -vmCount $TeamVMCount -SharedResourceGroup $SharedRG -SASURIKey $JsonSASURI -StorageAccount $StorageAccount -adminUsername $adminUsername -adminPassword $adminPassword -AsJob 
 
 ###################################################################
 # Setup Managed Instance and ADF with SSIS IR
@@ -150,7 +151,7 @@ New-AzResourceGroupDeployment -ResourceGroupName $TeamRG -TemplateUri $TemplateU
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Creating sqlhack-mi Managed Instance................................................."
 
 $TemplateUri = "https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/ARM%20Templates/ARM%20Template%20-%20SQL%20Hackathon%20-%20Managed%20Instance-%20v2.json"
-New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminUsername $adminUsername -adminPassword $Password -location $location -createNSG 1 -createRT 1 -Name "ManagedInstanceBuild" -AsJob
+New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $TemplateUri -adminUsername $adminUsername -adminPassword $adminPassword -location $location -createNSG 1 -createRT 1 -Name "ManagedInstanceBuild" -AsJob
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Enviroment Build in progress. Please check RG deployments for errors."
 
