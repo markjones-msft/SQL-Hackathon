@@ -137,7 +137,7 @@
                             "fileUris": [
                                 "[variables('sqlCustomScriptUri')]"
                             ],
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('sqlCustomScriptFileName'))]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('sqlCustomScriptFileName'), ' -adminUsername ', parameters('adminUsername'),' -adminPassword ', parameters('adminPassword'))]"                   
                         }
                     },
                     "dependsOn": [

@@ -1,6 +1,7 @@
-﻿#param (
-#    [securestring]$AdminPassword
-#)
+﻿param (
+    [string]$adminUsername,
+    [securestring]$AdminPassword
+)
 
 
 # Disable Internet Explorer Enhanced Security Configuration
@@ -92,11 +93,15 @@ sqlcmd -S "(local)" -E -i "$BackupPath\1- CREATE Logins.sql"
 sqlcmd -S "(local)" -E -i "$BackupPath\2- RESTORE Databases.sql"
 sqlcmd -S "(local)" -E -i "$BackupPath\3- RESTORE FIXES.sql"
 
-md -Path "C:\FILESHARE"
+
 
 # Create a file share for DMS
+md -Path "C:\FILESHARE"
 cmd.exe /c "NET SHARE FILESHARE=C:\FILESHARE /grant:Everyone,FULL"
 
-
+Stop-Service -Name 'MSSQLSERVER'
+$Svc = Get-WmiObject win32_service -filter "name='MSSQLSERVER'"
+$Svc.Change($Null, $Null, $Null, $Null, $Null, $Null, ".\$adminUsername", ($AdminPassword | ConvertFrom-SecureString))
+Start-Service -Name 'MSSQLSERVER'
 
 
