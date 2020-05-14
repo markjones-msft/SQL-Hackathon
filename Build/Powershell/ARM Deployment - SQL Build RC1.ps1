@@ -1,6 +1,6 @@
 ﻿param (
-    [string]$adminUsername,
-    [securestring]$AdminPassword
+    [string]$AdminUsername,
+    [string]$AdminPassword
 )
 
 
@@ -101,7 +101,7 @@ cmd.exe /c "NET SHARE FILESHARE=C:\FILESHARE /grant:Everyone,FULL"
 
 Stop-Service -Name 'MSSQLSERVER'
 $Svc = Get-WmiObject win32_service -filter "name='MSSQLSERVER'"
-$Svc.Change($Null, $Null, $Null, $Null, $Null, $Null, ".\$adminUsername", ($AdminPassword | ConvertFrom-SecureString))
+$Svc.Change($Null, $Null, $Null, $Null, $Null, $Null, ".\$adminUsername", "$AdminPassword")
 Start-Service -Name 'MSSQLSERVER'
 
 
