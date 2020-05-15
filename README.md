@@ -46,7 +46,7 @@ The following diagram provides an overview of the Lab environment that will be b
 
 ## Instructions to Install ##
 
-**NOTE This repositry will install a number of components within the designated subscription at an estimated cost of around $20 per day **
+***NOTE This repositry will install a number of components within the designated subscription at an estimated cost of around $20 per day***
 
 To install please complete the following:
 1. Go to the BUILD folder and download the ARM Deployment - SQL Hackathon v2.ps1 powershell script.
