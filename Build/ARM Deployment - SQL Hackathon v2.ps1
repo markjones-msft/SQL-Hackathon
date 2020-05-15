@@ -63,11 +63,6 @@ do
     }
 while ($adminPassword.length -le 16)
 
-write-host $adminpassword
-write-host $adminUsername
-write-host $password
-#$adminPassword = convertto-securestring (convertfrom-securestring $Password)
-$Password = convertto-securestring ($adminPassword) -AsPlainText -Force
 ###################################################################
 # Setup Hack Resource Groups
 ###################################################################
