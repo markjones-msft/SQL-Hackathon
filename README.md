@@ -55,4 +55,4 @@ To install please complete the following:
 
 
 ## Known Issues ##
-1. The Lab instructions for migrating Databases will detail DMS to compltete the backups. This needs to be changes for a Manual backup with CHECKSUM
+1. The Lab instructions for migrating Databases will detail DMS to compltete the backups. This needs to be changed to a "Manual backup" which needs to be completed from SSMS and backups MUST be taken with CHECKSUM
