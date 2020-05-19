@@ -88,7 +88,7 @@ Start-service -Name 'MSSQLSERVER' -Verbose
 Start-Sleep -s 90
 
 # Create a file share for DMS
-md -Path "C:\FILESHARE"
+mkdir -Path "C:\FILESHARE"
 cmd.exe /c "NET SHARE FILESHARE=C:\FILESHARE /grant:Everyone,FULL"
 
 Stop-Service -Name 'MSSQLSERVER'
