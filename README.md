@@ -51,8 +51,8 @@ The following diagram provides an overview of the Lab environment that will be b
 To install please complete the following:
 1. Go to the BUILD folder and download the ARM Deployment - SQL Hackathon v2.ps1 powershell script.
 2. Within Powershell ISE or VSCode - load the ARM Deployment - SQL Hackathon v2.ps1
-3. Execute the ARM Deployment - SQL Hackathon v2.ps1 script, following the on screen prompts
+3. Execute the ARM Deployment - SQL Hackathon v2.ps1 script, following the on screen prompts (Note only select 1 TEAM VM when prompted)
 
 
 ## Known Issues ##
-1. The Lab instructions for migrating Databases will detail DMS to compltete the backups. This needs to be changes for a Manual backup with CHECKSUM
+1. The Lab instructions for migrating Databases will detail DMS to compltete the backups. This needs to be changed to a "Manual backup" which needs to be completed from SSMS and backups MUST be taken with CHECKSUM
