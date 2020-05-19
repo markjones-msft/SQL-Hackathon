@@ -54,9 +54,9 @@ $InstallPath = 'C:\Install'
 $BackupPath = 'C:\Backups'
 
 #Create Folders for Labs and Installs
-md -Path $InstallPath
-md -Path $BackupPath
-md -Path "C:\Data"
+mkdir -Path $InstallPath
+mkdir -Path $BackupPath
+mkdir -Path "C:\Data"
 
 $InstallPath = 'C:\Install'
 $BackupPath = 'C:\Backups'
@@ -95,12 +95,12 @@ Stop-Service -Name 'MSSQLSERVER'
 $Svc = Get-WmiObject win32_service -filter "name='MSSQLSERVER'"
 $Svc.Change($Null, $Null, $Null, $Null, $Null, $Null, ".\$adminUsername", "$AdminPassword")
 Start-Service -Name 'MSSQLSERVER'
-Start-Sleep -s 90
+Start-Sleep -s 160
 
 #Run SQL Cmds
-sqlcmd -S "(local)" -E -i "$BackupPath\1- CREATE Logins.sql"
-sqlcmd -S "(local)" -E -i "$BackupPath\2- RESTORE Databases.sql"
-sqlcmd -S "(local)" -E -i "$BackupPath\3- RESTORE FIXES.sql"
+sqlcmd -S "(local)" -U $AdminUsername -P $AdminPassword -i "$BackupPath\1- CREATE Logins.sql"
+sqlcmd -S "(local)" -U $AdminUsername -P $AdminPassword -i "$BackupPath\2- RESTORE Databases.sql"
+sqlcmd -S "(local)" -U $AdminUsername -P $AdminPassword -i "$BackupPath\3- RESTORE FIXES.sql"
 
 
 
