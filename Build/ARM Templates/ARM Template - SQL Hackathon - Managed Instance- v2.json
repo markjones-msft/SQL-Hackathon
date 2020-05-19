@@ -94,6 +94,12 @@
         }
 
     },
+    "outputs": {
+        "resourceID": {
+          "type": "string",
+          "value": "(variables('uniqueManagedInstanceName'))"
+        }
+    },
     "variables": {
         "location": "[resourceGroup().location]",
         "virtualNetworkResourceGroupName": "[resourceGroup().name]",

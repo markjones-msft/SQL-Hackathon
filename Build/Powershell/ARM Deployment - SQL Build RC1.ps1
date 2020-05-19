@@ -69,7 +69,6 @@ Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackatho
 
 
 #Download & Unzip Backups
-
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Build/Database%20Build/Backups.zip?raw=true' -UseBasicParsing -OutFile "$InstallPath\Backups.zip" | Wait-Process
 
@@ -88,13 +87,6 @@ Unzip "C:\Install\Backups.zip" "C:\"
 Start-service -Name 'MSSQLSERVER' -Verbose
 Start-Sleep -s 90
 
-#Run SQL Cmds
-sqlcmd -S "(local)" -E -i "$BackupPath\1- CREATE Logins.sql"
-sqlcmd -S "(local)" -E -i "$BackupPath\2- RESTORE Databases.sql"
-sqlcmd -S "(local)" -E -i "$BackupPath\3- RESTORE FIXES.sql"
-
-
-
 # Create a file share for DMS
 md -Path "C:\FILESHARE"
 cmd.exe /c "NET SHARE FILESHARE=C:\FILESHARE /grant:Everyone,FULL"
@@ -103,5 +95,15 @@ Stop-Service -Name 'MSSQLSERVER'
 $Svc = Get-WmiObject win32_service -filter "name='MSSQLSERVER'"
 $Svc.Change($Null, $Null, $Null, $Null, $Null, $Null, ".\$adminUsername", "$AdminPassword")
 Start-Service -Name 'MSSQLSERVER'
+Start-Sleep -s 90
+
+#Run SQL Cmds
+sqlcmd -S "(local)" -E -i "$BackupPath\1- CREATE Logins.sql"
+sqlcmd -S "(local)" -E -i "$BackupPath\2- RESTORE Databases.sql"
+sqlcmd -S "(local)" -E -i "$BackupPath\3- RESTORE FIXES.sql"
+
+
+
+
 
 
