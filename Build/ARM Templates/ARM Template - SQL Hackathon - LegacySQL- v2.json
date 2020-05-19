@@ -20,7 +20,7 @@
     "outputs": {
         "resourceID": {
           "type": "string",
-          "value": "(variables('sqlVirtualMachineName'))"
+          "value": "[variables('sqlNetworkInterfaceName')]"
         }
     },
     "variables": {
