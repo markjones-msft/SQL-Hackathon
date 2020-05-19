@@ -17,6 +17,12 @@
         }
         
     },
+    "outputs": {
+        "resourceID": {
+          "type": "string",
+          "value": "(variables('sqlVirtualMachineName'))"
+        }
+    },
     "variables": {
         "location": "[resourceGroup().location]",
         "SQLlMachineSize": "Standard_DS3_v2",
