@@ -95,7 +95,7 @@
 
     },
     "outputs": {
-        "resourceID": {
+        "Name": {
           "type": "string",
           "value": "[variables('uniqueManagedInstanceName')]"
         }
