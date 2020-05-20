@@ -61,7 +61,7 @@ do
     if ($x -le 0) {write-host "Existing build. Please check password and retry..."; Exit};
     $adminPassword = Read-Host "Please enter a 16 character Password. The password must be between 16 and 128 characters in length and must contain at least one number, one non-alphanumeric character, and one upper or lower case letter" -AsSecureString
     }
-while ($adminPassword.length -le 16)
+while ($adminPassword.length -le 15)
 
 ###################################################################
 # Setup Hack Resource Groups
