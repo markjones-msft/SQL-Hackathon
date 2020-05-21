@@ -46,10 +46,6 @@ $DefaultValue = "NorthEurope"
 if (($Location = Read-Host "Please enter the Location of the Resource Groups. (default value: $DefaultValue)") -eq '') {$Location = $DefaultValue}
 If (“NorthEurope”,”WestEurope”,”UKSouth”, "UKWest", "WestUS", "EastUS" -NotContains $Location  ) {Write-Warning "Unrecognised location. Setting to Default $DefaultValue" ; $Location = "NorthEurope"}
 
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: MAKE A NOTE OF THE FOLLOWING USERNAME and PASSWORD ########################"
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "The username and password specified next, will be used to credentials to SQL, Managed Instance and any VM's"
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################################"
-
 $x = 4
 do
     {$x = $x - 1
@@ -132,6 +128,8 @@ $notPresent = New-AzStorageContainerStoredAccessPolicy -Container migration -Pol
 $SASUri = (New-AzStorageContainerSASToken -Name "migration" -FullUri -Policy $storagePolicyName -Context $Context)
 $JsonSASURI = $SASUri | ConvertTo-Json
 
+write-host $notPresent
+
 # Copy files locally
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Build/SQL%20SSIS%20Databases/LocalMasterDataDb.bak?raw=true' -OutFile "$env:temp\LocalMasterDataDb.bak" | Wait-Process 
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Build/SQL%20SSIS%20Databases/SharedMasterDataDB.bak?raw=true' -OutFile "$env:temp\SharedMasterDataDb.bak"| Wait-Process
@@ -141,8 +139,25 @@ Set-AzStorageBlobContent  -Container "sqlbackups" -File "$env:temp\LocalMasterDa
 Set-AzStorageBlobContent  -Container "sqlbackups" -File "$env:temp\SharedMasterDataDb.bak" -Blob "SharedMasterDataDb.bak" -context $Context -force
 Set-AzStorageBlobContent  -Container "sqlbackups" -File "$env:temp\TenantDataDb.bak" -Blob "TenantDataDb.bak" -context $Context -force
 
-$notPresent = New-AzStorageContainerStoredAccessPolicy -Container sqlbackups -Policy $storagePolicyName -Permission rwl -ExpiryTime $expiryTime -Context $Context -StartTime(Get-Date) 
-$SSISSASUri = (New-AzStorageContainerSASToken -Name "sqlbackups" -FullUri -Policy $storagePolicyName -Context $Context)
+$sas = New-AzStorageContainerStoredAccessPolicy -Container sqlbackups -Policy $storagePolicyName -Permission rwl -ExpiryTime $expiryTime -Context $Context -StartTime(Get-Date) 
+$cbc = Get-AzStorageContainer  -Container "sqlbackups" -Context $Context
+$SSISSASUri = (New-AzStorageContainerSASToken -Name "sqlbackups" -Policy $storagePolicyName -Context $Context)
+
+write-host $SSISSASUri.substring(1)
+write-host $cbc.CloudBlobContainer.Uri
+$sqlScript = "CREATE CREDENTIAL [{0}] WITH IDENTITY='Shared Access Signature', SECRET='{1}';`nGO`n`n" -f  $cbc.CloudBlobContainer.Uri, $SSISSASUri.substring(1)
+
+
+$sqlScript = $sqlScript + "`RESTORE DATABASE [LocalMasterDataDb] FROM URL = '{0}/LocalMasterDataDb.bak';`nGO`n`n" -f $cbc.CloudBlobContainer.Uri 
+$sqlScript = $sqlScript + "`RESTORE DATABASE [SharedMasterDataDb] FROM URL = '{0}/SharedMasterDataDb.bak';`nGO`n`n" -f $cbc.CloudBlobContainer.Uri 
+$sqlScript = $sqlScript + "`RESTORE DATABASE [TenantDataDb] FROM URL = '{0}/TenantDataDb.bak';`nGO`n`n" -f $cbc.CloudBlobContainer.Uri 
+
+
+
+write-host $sqlScript 
+
+
+ $cbc.CloudBlobContainer.Uri
 
 ###################################################################
 # Setup SQL Legacy Server
@@ -187,10 +202,45 @@ $ManagedInstanceBuild = New-AzResourceGroupDeployment -ResourceGroupName $Shared
 $ManagedInstanceBuild = $ManagedInstanceBuild.State.ToString()
 
 ##################################################################
-# VERIFY BUILD
+# CHECK BUILD STATUS
 ##################################################################
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "SQL Hack Build in progress. Checking status of build..."
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Please note this can take up to 5 hours to complete, but please leave script running to allow for Post build tasks to complete."
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################################### PLEASE MAKE A NOTE OF FOLLOWING ####################################"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Target Subscription ID:`t`t`t`t $subscriptionID "
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Target Subscription Name:`t`t`t $subscriptionName "
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Target Region:`t`t`t`t`t $Location "
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Target Resource Group for Shared resources:`t $SharedRG "
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Target Resource Group for Team VM's:`t`t $TeamRG "
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Number Team VM's to Build:`t`t`t $TeamVMCount "
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Administrator UserName:`t`t`t`t $adminUsername "
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Administrator Password:`t`t`t`t $Password "
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################################"
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "####################################### IMPORTANT POST BUILD ACTIONS  ######################################"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow  "The following actions are required as Post build tasks"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow  "1. Azure DataFactory: You will need to start the integration runtime and enable AHUB"
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow  "3. All labs and documaention can be found on TEAMVM's in C:\_SQLHACK_\LABS"
+Write-Host -BackgroundColor Black -ForegroundColor Yellow  "4. Ensure the Script SQLMI-PostCreate.sql script is run on the Managed Instance before runnign the lab"
+
+$tSql2016 = "CREATE CREDENTIAL [{0}] WITH IDENTITY='Shared Access Signature', SECRET='{1}'" -f $cbc.Uri,$sas.Substring(1)
+$tsql2012 = "CREATE CREDENTIAL [BackupToURL] WITH IDENTITY='{0}', SECRET='{1}'" -f $storageAccount.StorageAccountName,$accountKeys[0].value
+ 
+
+$SQLScript = "USE master
+GO
+EXEC sp_configure ""CLR Enabled"", 1
+RECONFIGURE WITH OVERRIDE
+GO
+
+RESTORE DATABASE 
+
+if ((read-host "Please the above is correct. Press a to abort, any other key to continue.") -eq "a") {Return;}
+
+
+
 
 [int]$NetworkBuildStatus = 0
 [int]$LegacySQLBuildStatus = 0
