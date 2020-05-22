@@ -60,7 +60,7 @@ Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackatho
 #########################################################################
 
 # Download and install SSDT
-Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2095463' -OutFile 'C:\Install\SSDT-Setup-ENU.exe'
+Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2124518' -OutFile 'C:\Install\SSDT-Setup-ENU.exe'
 Start-Process -file 'C:\Install\SSDT-Setup-ENU.exe' -arg '/layout c:\Install\vs_install_bits /quiet /log C:\Install\SSDTLayout_install.txt' -wait
 start-sleep 10
 Start-Process -file 'C:\Install\vs_install_bits\SSDT-Setup-enu.exe' -arg '/INSTALLVSSQL /install INSTALLALL /norestart /passive /log C:\Install\SSDT_install.txt' -wait 
