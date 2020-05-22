@@ -15,15 +15,15 @@ GO
 CREATE CREDENTIAL [<Enter Blob URL Here>] WITH IDENTITY='Shared Access Signature', SECRET='<Enter Key here>';
 GO
 
-RESTORE DATABASE [LocalMasterDataDb] FROM URL = '<Enter Blob URL Here>';
+RESTORE DATABASE [LocalMasterDataDb] FROM URL = '<Enter Blob URL Here>/LocalMasterDataDb.bak';
 GO
 
-RESTORE DATABASE [SharedMasterDataDb] FROM URL = '<Enter Blob URL Here>';
+RESTORE DATABASE [SharedMasterDataDb] FROM URL = '<Enter Blob URL Here>/SharedMasterDataDB.bak';
 GO
 
-RESTORE DATABASE [TenantDataDb] FROM URL = '<Enter Blob URL Here>';      
+RESTORE DATABASE [TenantDataDb] FROM URL = '<Enter Blob URL Here>/TenantDataDb.bak';      
 GO
 
-RESTORE DATABASE [2008DW] FROM URL = '<Enter Blob URL Here>';
+RESTORE DATABASE [2008DW] FROM URL = '<Enter Blob URL Here>/2008DW.bak';
 GO
 
