@@ -71,7 +71,7 @@ Start-Process -file 'C:\Install\DataMigrationAssistant.msi' -arg '/qn /l*v C:\In
 
 # Download Storage Explorer
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?LinkId=708343&clcid=0x409' -OutFile "$InstallPath\StorageExplore.exe"
-Start-Process -file 'C:\Install\StorageExplore.exe' -arg '/VERYSILENT /norestart /LOG C:\Install\StorageExplore_install.txt'
+Start-Process -file 'C:\Install\StorageExplore.exe' -arg '/VERYSILENT /CURRENTUSER /norestart /LOG C:\Install\StorageExplore_install.txt'
 
 # Download and install SQL Server Management Studio
 Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2088649' -OutFile 'C:\Install\SSMS-Setup.exe'
