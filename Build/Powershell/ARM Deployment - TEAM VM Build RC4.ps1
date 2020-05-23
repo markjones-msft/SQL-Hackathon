@@ -52,8 +52,8 @@ Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/raw/master/Ha
 $StorageAccount | out-file -FilePath "$Labs3Path\StorageAccount.txt"
 
 Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/03%20Security/SQLScripts/2.%20Auditing.sql' -OutFile "$Labs3SecurityPath\2.Auditing.sql"
-Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/03%20Security/SQLScripts/2.%20Auditing.sql' -OutFile "$Labs3SecurityPath\3.Dynamic Data Masking.sql"
-Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/03%20Security/SQLScripts/2.%20Auditing.sql' -OutFile "$Labs3SecurityPath\4.TDE and Password Reset.sql"
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/03%20Security/SQLScripts/3.%20Dynamic%20Data%20Masking.sql' -OutFile "$Labs3SecurityPath\3.Dynamic Data Masking.sql"
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/03%20Security/SQLScripts/4.%20TDE%20and%20Password%20Reset.sql' -OutFile "$Labs3SecurityPath\4.TDE and Password Reset.sql"
 
 #########################################################################
 #Install Applications
