@@ -1,5 +1,4 @@
-﻿﻿
-#connect-AzAccount
+﻿﻿#connect-AzAccount
 
 #If you need to change subscriptions please use the below commands.
 #Get-AzSubscription
@@ -83,7 +82,6 @@ if (($TeamRG = Read-Host "Please Shared resource group name. (default value: $De
 $notPresent =Get-AzResourceGroup -name $TeamRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if (!($notPresent)) {New-AzResourceGroup -Name $TeamRG -Location $Location}
 
-
 ###################################################################
 # Setup Network and Storage account
 ###################################################################
@@ -143,7 +141,6 @@ New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location
 
 Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
-
 
 ###################################################################
 # Setup Team VM's

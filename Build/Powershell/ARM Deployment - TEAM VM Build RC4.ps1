@@ -20,7 +20,7 @@ md -Path $Labs2Path
 md -Path $Labs3Path
 md -Path $Labs3SecurityPath
 
-$SASURIKey = $SASURIKey | ConvertFrom-Json
+#$SASURIKey = $SASURIKey | ConvertFrom-Json
 
 #Download Items for LAB 01
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
