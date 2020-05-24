@@ -107,7 +107,7 @@ New-AzStorageContainer -Context $Context -Name auditlogs
 
 $storagePolicyName = “Migration-Policy”
 $expiryTime = (Get-Date).AddYears(1)
-New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission racwdl -ExpiryTime $expiryTime -Context $Context -StartTime(Get-Date) 
+New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission rwld -ExpiryTime $expiryTime -Context $Context -StartTime(Get-Date) 
 $SASUri = (New-AzStorageContainerSASToken -Name "migration" -FullUri -Policy $storagePolicyName -Context $Context)
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
