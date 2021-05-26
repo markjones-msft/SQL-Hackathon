@@ -110,12 +110,12 @@ $expiryTime = (Get-Date).AddYears(1)
 New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission rwld -ExpiryTime $expiryTime -Context $Context -StartTime(Get-Date) 
 $SASUri = (New-AzStorageContainerSASToken -Name "migration" -FullUri -Policy $storagePolicyName -Context $Context)
 
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
-Write-host -BackgroundColor Black -ForegroundColor Yellow $SASUri
-Write-host -BackgroundColor Black -ForegroundColor Yellow "Storage account name: $StorageAccount"
-Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
+#Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
+#Write-host -BackgroundColor Black -ForegroundColor Yellow $SASUri
+#Write-host -BackgroundColor Black -ForegroundColor Yellow "Storage account name: $StorageAccount"
+#Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
 
-read-host "Please Copy SASURI Key. Press any key to continue."
+#read-host "Please Copy SASURI Key. Press any key to continue."
 $JsonSASURI = $SASUri | ConvertTo-Json
 
 ###################################################################
@@ -137,7 +137,7 @@ New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $Templat
 # Setup KeyVault
 $Random = Get-Random -Maximum 99999
 $Keyvault = "sqlhack-keyvault-$Random"
-New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location -EnableSoftDelete
+New-AzKeyVault -Name $Keyvault  -ResourceGroupName $SharedRG -Location $Location
 
 Get-AzKeyVault -Name $Keyvault -ResourceGroupName $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if ($notPresent) {Write-Warning "sqlhack-keyvault Failed to build. Please check and retry";return;}
