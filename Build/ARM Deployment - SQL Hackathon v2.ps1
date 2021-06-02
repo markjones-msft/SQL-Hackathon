@@ -1,4 +1,4 @@
-﻿﻿#connect-AzAccount
+﻿
 
 #If you need to change subscriptions please use the below commands.
 #Get-AzSubscription
@@ -8,6 +8,13 @@ Write-Host -BackgroundColor Black -ForegroundColor Yellow "#####################
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "SQL Server Migration Hack Build Script"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "This script will build the enviroment for the SQL Server Hack and Labs"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "#################################################################################"
+
+Write-Host -BackgroundColor Black -ForegroundColor Yellow "Checking and Installing Az and SQL modules......................................."
+
+Set-ExecutionPolicy RemoteSigned -Force
+If(-not(Get-InstalledModule Az -ErrorAction silentlycontinue)){
+    Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+}
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Setting Enviroment Varibales....................................................."
 $subscriptionID = (Get-AzContext).Subscription.id
@@ -71,13 +78,13 @@ Write-Host -BackgroundColor Black -ForegroundColor Yellow "The Resource groups w
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################################"
 
 $DefaultValue = "SQLHACK-SHARED"
-if (($SharedRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$SharedRG = $DefaultValue}
+if (($SharedRG = Read-Host "Please enter a Shared resource group name. (default value: $DefaultValue)") -eq '') {$SharedRG = $DefaultValue}
 
 $notPresent = Get-AzResourceGroup -name $SharedRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if (!($notPresent)) {New-AzResourceGroup -Name $SharedRG -Location $Location} 
 
 $DefaultValue = "SQLHACK-TEAM_VMs"
-if (($TeamRG = Read-Host "Please Shared resource group name. (default value: $DefaultValue)") -eq '') {$TeamRG = $DefaultValue}
+if (($TeamRG = Read-Host "Please enter a VM resource group name. (default value: $DefaultValue)") -eq '') {$TeamRG = $DefaultValue}
 
 $notPresent =Get-AzResourceGroup -name $TeamRG -ErrorVariable notPresent -ErrorAction SilentlyContinue
 if (!($notPresent)) {New-AzResourceGroup -Name $TeamRG -Location $Location}
@@ -97,7 +104,7 @@ if ($notPresent) {Write-Warning "VNET Failed to build. Please check and retry";r
 # Setup SASURI
 ###################################################################
 #Create Blob Storage Container and SASURI Key.
-$StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName 
+$StorageAccount = (get-AzStorageAccount -ResourceGroupName $SharedRG).StorageAccountName  | Select-object -First 1
 $StorageAccountKeys = Get-AzStorageAccountKey -ResourceGroupName $SharedRG -Name $StorageAccount
 $Key0 = $StorageAccountKeys | Select-Object -First 1 -ExpandProperty Value
 $Context = New-AzStorageContext -StorageAccountName $StorageAccount -StorageAccountKey $Key0
@@ -110,12 +117,6 @@ $expiryTime = (Get-Date).AddYears(1)
 New-AzStorageContainerStoredAccessPolicy -Container migration -Policy $storagePolicyName -Permission rwld -ExpiryTime $expiryTime -Context $Context -StartTime(Get-Date) 
 $SASUri = (New-AzStorageContainerSASToken -Name "migration" -FullUri -Policy $storagePolicyName -Context $Context)
 
-#Write-Host -BackgroundColor Black -ForegroundColor Yellow "##################### IMPORTANT: PLEASE COPY THE FOLLOWING SASURI TOKEN ####################"
-#Write-host -BackgroundColor Black -ForegroundColor Yellow $SASUri
-#Write-host -BackgroundColor Black -ForegroundColor Yellow "Storage account name: $StorageAccount"
-#Write-Host -BackgroundColor Black -ForegroundColor Yellow "############################################################################################"
-
-#read-host "Please Copy SASURI Key. Press any key to continue."
 $JsonSASURI = $SASUri | ConvertTo-Json
 
 ###################################################################
@@ -164,3 +165,5 @@ Write-Warning "NOTE: THE FOLLOWING POST BUILD TASKS ARE REQUIRED."
 Write-Warning "1. DataFactory Build Ok. You will need to start the integration runtime and enable AHUB"
 Write-Warning "2. All labs and documaention can be found on TEAMVM's in C:\_SQLHACK_\LABS"
 Write-Warning "3. Restore the 4 databases in folder Build\SQL SSIS Databases onto the Managed Instance using the script Build\SQL SSIS Databases\SSIS Restore Script.sql"
+
+
