@@ -162,8 +162,8 @@ New-AzResourceGroupDeployment -ResourceGroupName $SharedRG -TemplateUri $Templat
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Enviroment Build in progress. Please check RG deployments for errors."
 
 Write-Warning "NOTE: THE FOLLOWING POST BUILD TASKS ARE REQUIRED."
-Write-Warning "1. DataFactory Build Ok. You will need to start the integration runtime and enable AHUB"
-Write-Warning "2. All labs and documaention can be found on TEAMVM's in C:\_SQLHACK_\LABS"
-Write-Warning "3. Restore the 4 databases in folder Build\SQL SSIS Databases onto the Managed Instance using the script Build\SQL SSIS Databases\SSIS Restore Script.sql"
+Write-Warning "1. DataFactory Build Ok. You will need to start the SSIS integration runtime and enable AHUB"
+Write-Warning "2. Restore the 4 databases for SSIS labs by running the C:\Install\SSIS Build Script.ps1 from a TEAMVM. Note: Only run once."
+Write-Warning "3. All labs and documaention can be found on TEAMVM's in C:\_SQLHACK_\LABS"
 
 

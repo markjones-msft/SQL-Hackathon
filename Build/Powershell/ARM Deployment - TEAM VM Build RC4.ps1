@@ -29,6 +29,7 @@ Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/raw/master/Ha
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/blob/master/Hands-On%20Lab/01%20Data%20Migration/SimpleTranReportApp.exe?raw=true' -OutFile "$Labs1Path\SimpleTranReportApp.exe"
 Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Hands-On%20Lab/01%20Data%20Migration/Migration%20Helper%20Script.sql' -OutFile "$Labs1Path\Migration Helper Script.txt"
 Invoke-WebRequest 'https://github.com/markjones-msft/SQL-Hackathon/raw/master/Hands-On%20Lab/01%20Data%20Migration/SQLHACK%20-%20DB%20Migration%20Lab%20Step-by-step.pdf' -OutFile "$Labs1Path\DB Migration Lab Step-by-step.pdf"
+Invoke-WebRequest 'https://raw.githubusercontent.com/markjones-msft/SQL-Hackathon/master/Build/SQL%20SSIS%20Databases/SSIS%20Build%20Script%20-%20TeamServer.ps1'  -OutFile "$InstallPath\SSIS Build Script.ps1"
 
 $SASURIKey | out-file -FilePath "$Labs1Path\SASKEY.txt"
 
