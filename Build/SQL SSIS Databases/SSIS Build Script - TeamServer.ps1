@@ -13,12 +13,13 @@ Write-Host -BackgroundColor Black -ForegroundColor Yellow "Checking and Installi
 
 
 Set-ExecutionPolicy RemoteSigned -Force
+
 If(-not(Get-InstalledModule Az -ErrorAction silentlycontinue)){
     Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
 }
 
 If(-not(Get-InstalledModule SQLServer -ErrorAction silentlycontinue)){
-    Install-Module SQLServer -Confirm:$False -Force
+    Install-Module SQLServer -Confirm:$False -Repository PSGallery -Force
 }
 
 ###############################################################################
@@ -96,8 +97,8 @@ $Key0 = $StorageAccountKeys | Select-Object -First 1 -ExpandProperty Value
 $Context = New-AzStorageContext -StorageAccountName $StorageAccount -StorageAccountKey $Key0
 
 #Create Container Build
-If(-not (Get-AzStorageContainer -Context $Context -Name build)){
-    New-AzStorageContainer -Context $Context -Name build
+If(-not (Get-AzStorageContainer -Context $Context -Name build -ErrorAction Ignore)){
+    $output = New-AzStorageContainer -Context $Context -Name build
 }
 
 #Create SASUri for Build Container
@@ -111,8 +112,8 @@ $SASUri = (New-AzStorageContainerSASToken -Name "build" -FullUri -Policy $storag
 
 #Copy Files from github to Local machine
 $Temp = (Get-Item -Path Env:Temp).value + "\SQLHACK"
-If(-not (dir $Temp)){
-    md $Temp
+If(-not (dir $Temp -ErrorAction Ignore)){
+    $output = md $Temp
 }
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Copying Backups to Blob storage....................................................."
