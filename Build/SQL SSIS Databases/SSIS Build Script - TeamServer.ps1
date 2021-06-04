@@ -78,7 +78,7 @@ if (!($notPresent)) {Write-Warning "Could not find SHARED resource group. Please
 ###############################################################################
 $sqlmiFDQN = (Get-AzSqlInstance -ResourceGroupName $SharedRG).FullyQualifiedDomainName  | Select-object -First 1
 
-if ($sqlmiFDQN -eq $null) {Write-Host -BackgroundColor Red -ForegroundColor White "Managed Instance Not present. Please check build and retry later." }
+if ($sqlmiFDQN -eq $null) {Write-Host -BackgroundColor Red -ForegroundColor White "Managed Instance not found. Please check build to ensure all deployments have completed and retry. Aborting" ; Return;}
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Found and targeting Managed Instance: $sqlmiFDQN"
 
 if ((read-host "Please ensure this is the correct Managed Instance. Press a to abort, any other key to continue.") -eq "a") {Return;}
