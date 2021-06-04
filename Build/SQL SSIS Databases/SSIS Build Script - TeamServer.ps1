@@ -78,6 +78,7 @@ if (!($notPresent)) {Write-Warning "Could not find SHARED resource group. Please
 ###############################################################################
 $sqlmiFDQN = (Get-AzSqlInstance -ResourceGroupName $SharedRG).FullyQualifiedDomainName  | Select-object -First 1
 
+if ($sqlmiFDQN -eq $null) {Write-Host -BackgroundColor Red -ForegroundColor White "Managed Instance Not present. Please check build and retry later." }
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Found and targeting Managed Instance: $sqlmiFDQN"
 
 if ((read-host "Please ensure this is the correct Managed Instance. Press a to abort, any other key to continue.") -eq "a") {Return;}
@@ -112,9 +113,7 @@ $SASUri = (New-AzStorageContainerSASToken -Name "build" -FullUri -Policy $storag
 
 #Copy Files from github to Local machine
 $Temp = (Get-Item -Path Env:Temp).value + "\SQLHACK"
-If(-not (dir $Temp -ErrorAction Ignore)){
-    $output = md $Temp
-}
+$output = md $Temp -ErrorAction Ignore
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Copying Backups to Blob storage....................................................."
 
@@ -144,34 +143,34 @@ Invoke-Sqlcmd -ServerInstance $sqlmiFDQN -Database "master" -Query $Query -Usern
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Complete."
 
 # Set SQL MI Credential
-$Query = "CREATE CREDENTIAL [" + $SASUri.split('?')[0,2] + "] WITH IDENTITY='Shared Access Signature', SECRET='" + $SASUri.split('?')[1,2] + "'"
+$Query = "if not exists (select 1 from sys.credentials where name = '" + $SASUri.split('?')[0,2] + "') CREATE CREDENTIAL [" + $SASUri.split('?')[0,2] + "] WITH IDENTITY='Shared Access Signature', SECRET='" + $SASUri.split('?')[1,2] + "'"
 Invoke-Sqlcmd -ServerInstance $sqlmiFDQN -Database "master" -Query $Query -Username $adminUsername -Password $Credentials.GetNetworkCredential().Password
 
 # Restore Database 2008DW
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Attempting restore 2008DW database on Managed Instance $sqlmiFDQN"
 $blob = (Get-AzStorageBlob -Container build -Context $Context -Blob '2008DW.bak').ICloudBlob.Uri.AbsoluteUri
-$Query = "RESTORE DATABASE [2008DW] FROM URL = '$blob'"
+$Query = "if not exists (select 1 from sysdatabases where name = '2008DW') RESTORE DATABASE [2008DW] FROM URL = '$blob'"
 Invoke-Sqlcmd -ServerInstance $sqlmiFDQN -Database "master" -Query $Query -Username $adminUsername -Password $Credentials.GetNetworkCredential().Password
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Complete."
 
 # Restore Database LocalMasterDataDb
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Attempting restore LocalMasterDataDb database on Managed Instance $sqlmiFDQN"
 $blob = (Get-AzStorageBlob -Container build -Context $Context -Blob 'LocalMasterDataDb.bak').ICloudBlob.Uri.AbsoluteUri
-$Query = "RESTORE DATABASE [LocalMasterDataDb] FROM URL = '$blob'"
+$Query = "if not exists (select 1 from sysdatabases where name = 'LocalMasterDataDb') RESTORE DATABASE [LocalMasterDataDb] FROM URL = '$blob'"
 Invoke-Sqlcmd -ServerInstance $sqlmiFDQN -Database "master" -Query $Query -Username $adminUsername -Password $Credentials.GetNetworkCredential().Password
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Complete."
 
 # Restore Database SharedMasterDataDB
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Attempting restore SharedMasterDataDB database on Managed Instance $sqlmiFDQN"
 $blob = (Get-AzStorageBlob -Container build -Context $Context -Blob 'SharedMasterDataDB.bak').ICloudBlob.Uri.AbsoluteUri
-$Query = "RESTORE DATABASE [SharedMasterDataDB] FROM URL = '$blob'"
+$Query = "if not exists (select 1 from sysdatabases where name = 'SharedMasterDataDB') RESTORE DATABASE [SharedMasterDataDB] FROM URL = '$blob'"
 Invoke-Sqlcmd -ServerInstance $sqlmiFDQN -Database "master" -Query $Query -Username $adminUsername -Password $Credentials.GetNetworkCredential().Password
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Complete."
 
 # Restore Database TenantDataDb
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Attempting restore TenantDataDb database on Managed Instance $sqlmiFDQN"
 $blob = (Get-AzStorageBlob -Container build -Context $Context -Blob 'TenantDataDb.bak').ICloudBlob.Uri.AbsoluteUri
-$Query = "RESTORE DATABASE [TenantDataDb] FROM URL = '$blob'"
+$Query = "if not exists (select 1 from sysdatabases where name = 'TenantDataDb') RESTORE DATABASE [TenantDataDb] FROM URL = '$blob'"
 Invoke-Sqlcmd -ServerInstance $sqlmiFDQN -Database "master" -Query $Query -Username $adminUsername -Password $Credentials.GetNetworkCredential().Password
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "Complete."
 
