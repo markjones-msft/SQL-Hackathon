@@ -1,8 +1,27 @@
 ﻿
+<# 
+#POWERSHELL ENVIRONMENTALS:
+#=========================
 
-#If you need to change subscriptions please use the below commands.
-#Get-AzSubscription
-#Select-AzSubscription <subscription ID here>
+#1. SET PS SCRIPT SECURITY:
+#1.1 Set PS execution policy to Unrestricted so script can be run:
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted
+
+#1.1 Confirm Exectution Policy changed to Unrestricted:
+Get-ExecutionPolicy
+
+#2. CONNECT PS SESSION TO TARGET AZURE SUBSCRIPTION:
+#2.1 Run this to connect into Azure:
+Connect-AzAccount
+
+#2.2 Run this to get a list of Subscriptions you have access to:
+Get-AzSubscription
+
+#2.3 Replace <Tenant ID> and <Subscription ID> placeholders below then run: 
+Select-AzSubscription -Tenant '<Tenant ID>' -SubscriptionId '<Subscription ID>'
+
+#NOW RUN THE ENTIRE PS SCRIPT COMPLETING REQUESTED PARAMTERS AS PROMPTED.
+#>
 
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "#################################################################################"
 Write-Host -BackgroundColor Black -ForegroundColor Yellow "SQL Server Migration Hack Build Script"
